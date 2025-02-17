@@ -1,4 +1,4 @@
-package br.com.connectmotors.ConnectMotors;
+package br.com.ConnectMotors;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

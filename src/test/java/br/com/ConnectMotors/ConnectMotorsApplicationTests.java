@@ -1,4 +1,4 @@
-package br.com.connectmotors.ConnectMotors;
+package br.com.ConnectMotors;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
