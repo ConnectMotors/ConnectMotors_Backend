@@ -1,6 +1,6 @@
 package br.com.ConnectMotors.Config;
 
-import br.com.ConnectMotors.Entidade.Model.User;
+import br.com.ConnectMotors.Entidade.Model.User.User;
 import br.com.ConnectMotors.Entidade.Repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

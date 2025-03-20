@@ -1,0 +1,132 @@
+{
+    "info": {
+      "name": "ConnectMotors API",
+      "_postman_id": "connectmotors-api-123",
+      "description": "Coleção de endpoints para teste da API ConnectMotors",
+      "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+      {
+        "name": "Autenticação",
+        "item": [
+          {
+            "name": "Register",
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n    \"username\": \"testuser\",\n    \"password\": \"password123\"\n}"
+              },
+              "url": {
+                "raw": "http://localhost:8080/auth/register",
+                "protocol": "http",
+                "host": ["localhost"],
+                "port": "8080",
+                "path": ["auth", "register"]
+              },
+              "description": "Registra um novo usuário"
+            }
+          },
+          {
+            "name": "Login",
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n    \"username\": \"testuser\",\n    \"password\": \"password123\"\n}"
+              },
+              "url": {
+                "raw": "http://localhost:8080/auth/login",
+                "protocol": "http",
+                "host": ["localhost"],
+                "port": "8080",
+                "path": ["auth", "login"]
+              },
+              "description": "Realiza login e retorna token JWT"
+            }
+          }
+        ]
+      },
+      {
+        "name": "Recursos",
+        "item": [
+          {
+            "name": "Public Resource",
+            "request": {
+              "method": "GET",
+              "header": [],
+              "url": {
+                "raw": "http://localhost:8080/api/public",
+                "protocol": "http",
+                "host": ["localhost"],
+                "port": "8080",
+                "path": ["api", "public"]
+              },
+              "description": "Acessa recurso público sem autenticação"
+            }
+          },
+          {
+            "name": "Private Resource",
+            "request": {
+              "method": "GET",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{token}}",
+                  "description": "Insira o token JWT obtido no login"
+                }
+              ],
+              "url": {
+                "raw": "http://localhost:8080/api/private",
+                "protocol": "http",
+                "host": ["localhost"],
+                "port": "8080",
+                "path": ["api", "private"]
+              },
+              "description": "Acessa recurso privado (requer autenticação)"
+            }
+          },
+          {
+            "name": "Admin Resource",
+            "request": {
+              "method": "GET",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{token}}",
+                  "description": "Insira o token JWT obtido no login"
+                }
+              ],
+              "url": {
+                "raw": "http://localhost:8080/api/admin",
+                "protocol": "http",
+                "host": ["localhost"],
+                "port": "8080",
+                "path": ["api", "admin"]
+              },
+              "description": "Acessa recurso admin (requer autenticação e role ADMIN)"
+            }
+          }
+        ]
+      }
+    ],
+    "variable": [
+      {
+        "key": "token",
+        "value": "insira_seu_token_aqui",
+        "description": "Token JWT obtido no endpoint de login"
+      }
+    ]
+  }

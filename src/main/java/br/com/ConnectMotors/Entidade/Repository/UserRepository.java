@@ -2,7 +2,7 @@ package br.com.ConnectMotors.Entidade.Repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import br.com.ConnectMotors.Entidade.Model.User;
+import br.com.ConnectMotors.Entidade.Model.User.User;
 
 import java.util.Optional;
 

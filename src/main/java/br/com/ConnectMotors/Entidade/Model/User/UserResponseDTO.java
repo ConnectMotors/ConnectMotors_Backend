@@ -1,12 +1,12 @@
-package br.com.ConnectMotors.Entidade.Model;
+package br.com.ConnectMotors.Entidade.Model.User;
 
-public class JwtResponse {
+public class UserResponseDTO {
     private final String token;
-    
-    public JwtResponse(String token) {
+
+    public UserResponseDTO(String token) {
         this.token = token;
     }
-    
+
     public String getToken() {
         return this.token;
     }
