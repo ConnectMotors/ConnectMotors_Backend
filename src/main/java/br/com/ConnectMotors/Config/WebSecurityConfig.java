@@ -42,12 +42,14 @@ public class WebSecurityConfig {
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> 
                 auth.requestMatchers("/auth/**").permitAll()
+                    .requestMatchers("/motorcycles").permitAll()
                     .requestMatchers("/api/public/**").permitAll()
                     .requestMatchers("/auth/**", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
                     .requestMatchers("/uploads/**").permitAll()
                     .requestMatchers("/cars").permitAll()
                     .requestMatchers("/cars/{id}").permitAll()
                     .requestMatchers("/cars/register").authenticated()
+                    .requestMatchers("/motorcycles/register").authenticated()
                 
                     .anyRequest().authenticated()
             );

@@ -1,132 +1,344 @@
 {
-    "info": {
+  "info": {
       "name": "ConnectMotors API",
-      "_postman_id": "connectmotors-api-123",
-      "description": "Coleção de endpoints para teste da API ConnectMotors",
+      "description": "Coleção para testar a API ConnectMotors, incluindo autenticação, motos, carros e recursos protegidos.",
       "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
-    },
-    "item": [
+  },
+  "item": [
       {
-        "name": "Autenticação",
-        "item": [
-          {
-            "name": "Register",
-            "request": {
-              "method": "POST",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "body": {
-                "mode": "raw",
-                "raw": "{\n    \"username\": \"testuser\",\n    \"password\": \"password123\"\n}"
+          "name": "Autenticação",
+          "item": [
+              {
+                  "name": "Registrar Usuário",
+                  "request": {
+                      "method": "POST",
+                      "header": [
+                          {
+                              "key": "Content-Type",
+                              "value": "application/json"
+                          }
+                      ],
+                      "body": {
+                          "mode": "raw",
+                          "raw": "{\n    \"username\": \"testuser\",\n    \"password\": \"testpass123\"\n}"
+                      },
+                      "url": {
+                          "raw": "http://localhost:8080/auth/register",
+                          "protocol": "http",
+                          "host": ["localhost"],
+                          "port": "8080",
+                          "path": ["auth", "register"]
+                      }
+                  },
+                  "response": []
               },
-              "url": {
-                "raw": "http://localhost:8080/auth/register",
-                "protocol": "http",
-                "host": ["localhost"],
-                "port": "8080",
-                "path": ["auth", "register"]
-              },
-              "description": "Registra um novo usuário"
-            }
-          },
-          {
-            "name": "Login",
-            "request": {
-              "method": "POST",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "body": {
-                "mode": "raw",
-                "raw": "{\n    \"username\": \"testuser\",\n    \"password\": \"password123\"\n}"
-              },
-              "url": {
-                "raw": "http://localhost:8080/auth/login",
-                "protocol": "http",
-                "host": ["localhost"],
-                "port": "8080",
-                "path": ["auth", "login"]
-              },
-              "description": "Realiza login e retorna token JWT"
-            }
-          }
-        ]
+              {
+                  "name": "Login Usuário",
+                  "event": [
+                      {
+                          "listen": "test",
+                          "script": {
+                              "exec": [
+                                  "pm.test(\"Login bem-sucedido\", function () {",
+                                  "    pm.response.to.have.status(200);",
+                                  "    var jsonData = pm.response.json();",
+                                  "    pm.collectionVariables.set(\"jwt_token\", jsonData.token);",
+                                  "});"
+                              ],
+                              "type": "text/javascript"
+                          }
+                      }
+                  ],
+                  "request": {
+                      "method": "POST",
+                      "header": [
+                          {
+                              "key": "Content-Type",
+                              "value": "application/json"
+                          }
+                      ],
+                      "body": {
+                          "mode": "raw",
+                          "raw": "{\n    \"username\": \"testuser\",\n    \"password\": \"testpass123\"\n}"
+                      },
+                      "url": {
+                          "raw": "http://localhost:8080/auth/login",
+                          "protocol": "http",
+                          "host": ["localhost"],
+                          "port": "8080",
+                          "path": ["auth", "login"]
+                      }
+                  },
+                  "response": []
+              }
+          ]
       },
       {
-        "name": "Recursos",
-        "item": [
-          {
-            "name": "Public Resource",
-            "request": {
-              "method": "GET",
-              "header": [],
-              "url": {
-                "raw": "http://localhost:8080/api/public",
-                "protocol": "http",
-                "host": ["localhost"],
-                "port": "8080",
-                "path": ["api", "public"]
+          "name": "Motorcycles",
+          "item": [
+              {
+                  "name": "Cadastrar Moto",
+                  "request": {
+                      "method": "POST",
+                      "header": [],
+                      "body": {
+                          "mode": "formdata",
+                          "formdata": [
+                              {"key": "brand", "value": "Honda", "type": "text"},
+                              {"key": "model", "value": "CBR 500", "type": "text"},
+                              {"key": "year", "value": "2023", "type": "text"},
+                              {"key": "mileage", "value": "15000", "type": "text"},
+                              {"key": "price", "value": "25000.00", "type": "text"},
+                              {"key": "images", "type": "file", "src": "path/to/moto1.jpg"},
+                              {"key": "images", "type": "file", "src": "path/to/moto2.jpg"}
+                          ]
+                      },
+                      "url": {
+                          "raw": "http://localhost:8080/motorcycles/register",
+                          "protocol": "http",
+                          "host": ["localhost"],
+                          "port": "8080",
+                          "path": ["motorcycles", "register"]
+                      }
+                  },
+                  "response": []
               },
-              "description": "Acessa recurso público sem autenticação"
-            }
-          },
-          {
-            "name": "Private Resource",
-            "request": {
-              "method": "GET",
-              "header": [
-                {
-                  "key": "Authorization",
-                  "value": "Bearer {{token}}",
-                  "description": "Insira o token JWT obtido no login"
-                }
-              ],
-              "url": {
-                "raw": "http://localhost:8080/api/private",
-                "protocol": "http",
-                "host": ["localhost"],
-                "port": "8080",
-                "path": ["api", "private"]
+              {
+                  "name": "Listar Todas as Motos",
+                  "request": {
+                      "method": "GET",
+                      "header": [],
+                      "url": {
+                          "raw": "http://localhost:8080/motorcycles",
+                          "protocol": "http",
+                          "host": ["localhost"],
+                          "port": "8080",
+                          "path": ["motorcycles"]
+                      }
+                  },
+                  "response": []
               },
-              "description": "Acessa recurso privado (requer autenticação)"
-            }
-          },
-          {
-            "name": "Admin Resource",
-            "request": {
-              "method": "GET",
-              "header": [
-                {
-                  "key": "Authorization",
-                  "value": "Bearer {{token}}",
-                  "description": "Insira o token JWT obtido no login"
-                }
-              ],
-              "url": {
-                "raw": "http://localhost:8080/api/admin",
-                "protocol": "http",
-                "host": ["localhost"],
-                "port": "8080",
-                "path": ["api", "admin"]
+              {
+                  "name": "Buscar Moto por ID",
+                  "request": {
+                      "method": "GET",
+                      "header": [],
+                      "url": {
+                          "raw": "http://localhost:8080/motorcycles/1",
+                          "protocol": "http",
+                          "host": ["localhost"],
+                          "port": "8080",
+                          "path": ["motorcycles", "1"]
+                      }
+                  },
+                  "response": []
               },
-              "description": "Acessa recurso admin (requer autenticação e role ADMIN)"
-            }
-          }
-        ]
-      }
-    ],
-    "variable": [
+              {
+                  "name": "Atualizar Moto",
+                  "request": {
+                      "method": "PUT",
+                      "header": [
+                          {
+                              "key": "Content-Type",
+                              "value": "application/json"
+                          }
+                      ],
+                      "body": {
+                          "mode": "raw",
+                          "raw": "{\n    \"brand\": \"Yamaha\",\n    \"model\": \"MT-07\",\n    \"year\": \"2022\",\n    \"mileage\": \"20000\",\n    \"price\": \"30000.00\"\n}"
+                      },
+                      "url": {
+                          "raw": "http://localhost:8080/motorcycles/1",
+                          "protocol": "http",
+                          "host": ["localhost"],
+                          "port": "8080",
+                          "path": ["motorcycles", "1"]
+                      }
+                  },
+                  "response": []
+              },
+              {
+                  "name": "Excluir Moto",
+                  "request": {
+                      "method": "DELETE",
+                      "header": [],
+                      "url": {
+                          "raw": "http://localhost:8080/motorcycles/1",
+                          "protocol": "http",
+                          "host": ["localhost"],
+                          "port": "8080",
+                          "path": ["motorcycles", "1"]
+                      }
+                  },
+                  "response": []
+              }
+          ]
+      },
       {
-        "key": "token",
-        "value": "insira_seu_token_aqui",
-        "description": "Token JWT obtido no endpoint de login"
+          "name": "Cars",
+          "item": [
+              {
+                  "name": "Cadastrar Carro",
+                  "request": {
+                      "method": "POST",
+                      "header": [],
+                      "body": {
+                          "mode": "formdata",
+                          "formdata": [
+                              {"key": "brand", "value": "Toyota", "type": "text"},
+                              {"key": "model", "value": "Corolla", "type": "text"},
+                              {"key": "year", "value": "2021", "type": "text"},
+                              {"key": "mileage", "value": "30000", "type": "text"},
+                              {"key": "price", "value": "80000.00", "type": "text"},
+                              {"key": "images", "type": "file", "src": "path/to/carro1.jpg"}
+                          ]
+                      },
+                      "url": {
+                          "raw": "http://localhost:8080/cars/register",
+                          "protocol": "http",
+                          "host": ["localhost"],
+                          "port": "8080",
+                          "path": ["cars", "register"]
+                      }
+                  },
+                  "response": []
+              },
+              {
+                  "name": "Listar Todos os Carros",
+                  "request": {
+                      "method": "GET",
+                      "header": [],
+                      "url": {
+                          "raw": "http://localhost:8080/cars",
+                          "protocol": "http",
+                          "host": ["localhost"],
+                          "port": "8080",
+                          "path": ["cars"]
+                      }
+                  },
+                  "response": []
+              },
+              {
+                  "name": "Buscar Carro por ID",
+                  "request": {
+                      "method": "GET",
+                      "header": [],
+                      "url": {
+                          "raw": "http://localhost:8080/cars/1",
+                          "protocol": "http",
+                          "host": ["localhost"],
+                          "port": "8080",
+                          "path": ["cars", "1"]
+                      }
+                  },
+                  "response": []
+              },
+              {
+                  "name": "Atualizar Carro",
+                  "request": {
+                      "method": "PUT",
+                      "header": [
+                          {
+                              "key": "Content-Type",
+                              "value": "application/json"
+                          }
+                      ],
+                      "body": {
+                          "mode": "raw",
+                          "raw": "{\n    \"brand\": \"Honda\",\n    \"model\": \"Civic\",\n    \"year\": \"2020\",\n    \"mileage\": \"35000\",\n    \"price\": \"85000.00\"\n}"
+                      },
+                      "url": {
+                          "raw": "http://localhost:8080/cars/1",
+                          "protocol": "http",
+                          "host": ["localhost"],
+                          "port": "8080",
+                          "path": ["cars", "1"]
+                      }
+                  },
+                  "response": []
+              },
+              {
+                  "name": "Excluir Carro",
+                  "request": {
+                      "method": "DELETE",
+                      "header": [],
+                      "url": {
+                          "raw": "http://localhost:8080/cars/1",
+                          "protocol": "http",
+                          "host": ["localhost"],
+                          "port": "8080",
+                          "path": ["cars", "1"]
+                      }
+                  },
+                  "response": []
+              }
+          ]
+      },
+      {
+          "name": "Resources",
+          "item": [
+              {
+                  "name": "Recurso Público",
+                  "request": {
+                      "method": "GET",
+                      "header": [],
+                      "url": {
+                          "raw": "http://localhost:8080/api/public",
+                          "protocol": "http",
+                          "host": ["localhost"],
+                          "port": "8080",
+                          "path": ["api", "public"]
+                      }
+                  },
+                  "response": []
+              },
+              {
+                  "name": "Recurso Privado",
+                  "request": {
+                      "method": "GET",
+                      "header": [
+                          {
+                              "key": "Authorization",
+                              "value": "Bearer {{jwt_token}}"
+                          }
+                      ],
+                      "url": {
+                          "raw": "http://localhost:8080/api/private",
+                          "protocol": "http",
+                          "host": ["localhost"],
+                          "port": "8080",
+                          "path": ["api", "private"]
+                      }
+                  },
+                  "response": []
+              },
+              {
+                  "name": "Recurso Admin",
+                  "request": {
+                      "method": "GET",
+                      "header": [
+                          {
+                              "key": "Authorization",
+                              "value": "Bearer {{jwt_token}}"
+                          }
+                      ],
+                      "url": {
+                          "raw": "http://localhost:8080/api/admin",
+                          "protocol": "http",
+                          "host": ["localhost"],
+                          "port": "8080",
+                          "path": ["api", "admin"]
+                      }
+                  },
+                  "response": []
+              }
+          ]
       }
-    ]
-  }
+  ],
+  "variable": [
+      {
+          "key": "jwt_token",
+          "value": ""
+      }
+  ]
+}
