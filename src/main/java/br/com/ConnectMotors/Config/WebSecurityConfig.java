@@ -50,6 +50,7 @@ public class WebSecurityConfig {
                     .requestMatchers("/cars/{id}").permitAll()
                     .requestMatchers("/cars/register").authenticated()
                     .requestMatchers("/motorcycles/register").authenticated()
+                    .requestMatchers("/anuncios/**").authenticated()
                 
                     .anyRequest().authenticated()
             );
