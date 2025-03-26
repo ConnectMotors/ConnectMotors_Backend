@@ -18,7 +18,7 @@ import br.com.ConnectMotors.Entidade.Repository.UserRepository;
 import java.util.Arrays;
 
 @Service
-public class JwtAuthenticationService {
+public class UserService {
 
     @Autowired
     private AuthenticationManager authenticationManager;

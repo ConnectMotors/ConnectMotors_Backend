@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.*;
 
 import br.com.ConnectMotors.Entidade.Model.User.UserRequestDTO;
 import br.com.ConnectMotors.Entidade.Model.User.UserResponseDTO;
-import br.com.ConnectMotors.Entidade.Service.JwtAuthenticationService;
+import br.com.ConnectMotors.Entidade.Service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -24,7 +24,7 @@ import java.util.Map;
 public class UserController {
 
     @Autowired
-    private JwtAuthenticationService authenticationService;
+    private UserService authenticationService;
 
     @PostMapping("/login")
     @Operation(

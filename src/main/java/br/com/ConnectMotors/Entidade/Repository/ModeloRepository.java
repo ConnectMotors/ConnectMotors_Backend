@@ -1,5 +1,8 @@
 package br.com.ConnectMotors.Entidade.Repository;
 
-public class ModeloRepository {
-    
+import br.com.ConnectMotors.Entidade.Model.Modelo.Modelo;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface ModeloRepository extends JpaRepository<Modelo, Long> {
 }
