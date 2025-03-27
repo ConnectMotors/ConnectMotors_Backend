@@ -20,7 +20,10 @@ public class Carro {
     private Modelo modelo;
 
     private int ano;
-    private double preco;
+    private String cor;
+    private String cambio;
+    private String combustivel;
+    private String carroceria;
 
     // Getters e Setters
     public Long getId() {
@@ -55,11 +58,35 @@ public class Carro {
         this.ano = ano;
     }
 
-    public double getPreco() {
-        return preco;
+    public String getCor() {
+        return cor;
     }
 
-    public void setPreco(double preco) {
-        this.preco = preco;
+    public void setCor(String cor) {
+        this.cor = cor;
+    }
+
+    public String getCambio() {
+        return cambio;
+    }
+
+    public void setCambio(String cambio) {
+        this.cambio = cambio;
+    }
+
+    public String getCombustivel() {
+        return combustivel;
+    }
+
+    public void setCombustivel(String combustivel) {
+        this.combustivel = combustivel;
+    }
+
+    public String getCarroceria() {
+        return carroceria;
+    }
+
+    public void setCarroceria(String carroceria) {
+        this.carroceria = carroceria;
     }
 }

@@ -41,17 +41,20 @@ public class WebSecurityConfig {
             .exceptionHandling(exception -> exception.authenticationEntryPoint(jwtAuthenticationEntryPoint))
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> 
-                auth.requestMatchers("/auth/**").permitAll()
-                    .requestMatchers("/motorcycles").permitAll()
+                auth
+                    // Endpoints públicos
+                    .requestMatchers("/auth/**").permitAll()
                     .requestMatchers("/api/public/**").permitAll()
                     .requestMatchers("/auth/**", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
                     .requestMatchers("/uploads/**").permitAll()
-                    .requestMatchers("/cars").permitAll()
-                    .requestMatchers("/cars/{id}").permitAll()
-                    .requestMatchers("/cars/register").authenticated()
-                    .requestMatchers("/motorcycles/register").authenticated()
+
+                    // Endpoints autenticados (qualquer usuário logado)
                     .requestMatchers("/anuncios/**").authenticated()
-                
+
+                    // Endpoints restritos a ROLE_ADMIN
+                    .requestMatchers("/admin/**").hasRole("ADMIN")
+
+                    // Qualquer outro endpoint exige autenticação
                     .anyRequest().authenticated()
             );
         

@@ -1,10 +1,8 @@
 package br.com.ConnectMotors.Entidade.Model.Anuncio;
 
-import br.com.ConnectMotors.Entidade.Model.Marca.Marca;
-import br.com.ConnectMotors.Entidade.Model.Modelo.Modelo;
-import br.com.ConnectMotors.Entidade.Model.User.User;
+import br.com.ConnectMotors.Entidade.Model.Carro.Carro;
+import br.com.ConnectMotors.Entidade.Model.User.User; // Certifique-se de importar a entidade User
 import jakarta.persistence.*;
-import java.util.List;
 
 @Entity
 public class Anuncio {
@@ -13,43 +11,22 @@ public class Anuncio {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
-    private String placa;
-
-    @Column(nullable = false)
-    private int quilometragem;
-
-    @Column(nullable = false)
-    private double preco;
-
-    @ElementCollection
-    @CollectionTable(name = "anuncio_fotos", joinColumns = @JoinColumn(name = "anuncio_id"))
-    @Column(name = "foto_url")
-    private List<String> fotos;
-
-    @ManyToOne
-    @JoinColumn(name = "marca_id", nullable = false)
-    private Marca marca;
-
-    @ManyToOne
-    @JoinColumn(name = "modelo_id", nullable = false)
-    private Modelo modelo;
-
-    @Column(nullable = false)
-    private int ano;
-
     @ManyToOne
     @JoinColumn(name = "usuario_id", nullable = false)
-    private User usuario;
+    private User usuario;  // Associe o usuário ao anúncio
 
-    // Campos adicionados
-    @Column(nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "carro_id", nullable = false)
+    private Carro carro;
+
+    private double preco;
+    private String descricao;
+    private String quilometragem;
+    private String placa;
+    private String foto;
+
     private String cep;
-
-    @Column(nullable = false)
     private String cidade;
-
-    @Column(nullable = false)
     private String estado;
 
     // Getters e Setters
@@ -61,20 +38,20 @@ public class Anuncio {
         this.id = id;
     }
 
-    public String getPlaca() {
-        return placa;
+    public User getUsuario() {
+        return usuario;
     }
 
-    public void setPlaca(String placa) {
-        this.placa = placa;
+    public void setUsuario(User usuario) {
+        this.usuario = usuario;
     }
 
-    public int getQuilometragem() {
-        return quilometragem;
+    public Carro getCarro() {
+        return carro;
     }
 
-    public void setQuilometragem(int quilometragem) {
-        this.quilometragem = quilometragem;
+    public void setCarro(Carro carro) {
+        this.carro = carro;
     }
 
     public double getPreco() {
@@ -85,47 +62,38 @@ public class Anuncio {
         this.preco = preco;
     }
 
-    public List<String> getFotos() {
-        return fotos;
+    public String getDescricao() {
+        return descricao;
     }
 
-    public void setFotos(List<String> fotos) {
-        this.fotos = fotos;
+    public void setDescricao(String descricao) {
+        this.descricao = descricao;
     }
 
-    public Marca getMarca() {
-        return marca;
+    public String getQuilometragem() {
+        return quilometragem;
     }
 
-    public void setMarca(Marca marca) {
-        this.marca = marca;
+    public void setQuilometragem(String quilometragem) {
+        this.quilometragem = quilometragem;
     }
 
-    public Modelo getModelo() {
-        return modelo;
+    public String getPlaca() {
+        return placa;
     }
 
-    public void setModelo(Modelo modelo) {
-        this.modelo = modelo;
+    public void setPlaca(String placa) {
+        this.placa = placa;
     }
 
-    public int getAno() {
-        return ano;
+    public String getFoto() {
+        return foto;
     }
 
-    public void setAno(int ano) {
-        this.ano = ano;
+    public void setFoto(String foto) {
+        this.foto = foto;
     }
 
-    public User getUsuario() {
-        return usuario;
-    }
-
-    public void setUsuario(User usuario) {
-        this.usuario = usuario;
-    }
-
-    // Getters e Setters para CEP, Cidade e Estado
     public String getCep() {
         return cep;
     }

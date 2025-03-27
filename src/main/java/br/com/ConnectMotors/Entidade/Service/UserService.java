@@ -16,6 +16,7 @@ import br.com.ConnectMotors.Entidade.Model.User.UserRequestDTO;
 import br.com.ConnectMotors.Entidade.Repository.UserRepository;
 
 import java.util.Arrays;
+import java.util.List;
 
 @Service
 public class UserService {
@@ -45,11 +46,20 @@ public class UserService {
     }
     
     public void registerUser(UserRequestDTO userDTO) {
+        if (userDTO.getPassword() == null || userDTO.getPassword().isEmpty()) {
+            throw new IllegalArgumentException("O campo 'password' não pode ser nulo ou vazio.");
+        }
+    
         User newUser = new User();
         newUser.setUsername(userDTO.getUsername());
         newUser.setPassword(bcryptEncoder.encode(userDTO.getPassword()));
-        newUser.setRoles(Arrays.asList("USER"));
-        
+    
+        // Usa os roles do DTO ou define ROLE_USER como padrão
+        List<String> roles = userDTO.getRoles() != null && !userDTO.getRoles().isEmpty() 
+            ? userDTO.getRoles() 
+            : Arrays.asList("ROLE_USER");
+        newUser.setRoles(roles);
+    
         userRepository.save(newUser);
     }
 
