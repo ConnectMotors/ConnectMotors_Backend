@@ -23,9 +23,11 @@ public class JwtUserDetailsService implements UserDetailsService {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado: " + username));
 
-        List<SimpleGrantedAuthority> authorities = user.getRoles().stream()
-                .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
+                List<SimpleGrantedAuthority> authorities = user.getRoles().stream()
+                .map(role -> new SimpleGrantedAuthority(role)) // Sem "ROLE_"
                 .collect(Collectors.toList());
+            
+            
 
         return new org.springframework.security.core.userdetails.User(
                 user.getUsername(),

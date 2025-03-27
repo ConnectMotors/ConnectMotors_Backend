@@ -46,20 +46,13 @@ public class UserService {
     }
     
     public void registerUser(UserRequestDTO userDTO) {
-        if (userDTO.getPassword() == null || userDTO.getPassword().isEmpty()) {
-            throw new IllegalArgumentException("O campo 'password' não pode ser nulo ou vazio.");
-        }
-    
         User newUser = new User();
         newUser.setUsername(userDTO.getUsername());
         newUser.setPassword(bcryptEncoder.encode(userDTO.getPassword()));
-    
-        // Usa os roles do DTO ou define ROLE_USER como padrão
         List<String> roles = userDTO.getRoles() != null && !userDTO.getRoles().isEmpty() 
             ? userDTO.getRoles() 
             : Arrays.asList("ROLE_USER");
         newUser.setRoles(roles);
-    
         userRepository.save(newUser);
     }
 

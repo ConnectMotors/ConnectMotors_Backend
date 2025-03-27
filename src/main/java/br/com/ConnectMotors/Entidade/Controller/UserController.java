@@ -1,5 +1,8 @@
 package br.com.ConnectMotors.Entidade.Controller;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,7 +16,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/auth")
@@ -44,9 +46,26 @@ public class UserController {
         return ResponseEntity.ok(new UserResponseDTO(token));
     }
 
-@PostMapping("/register")
-public ResponseEntity<?> registerUser(@Valid @RequestBody UserRequestDTO userDTO) {
-    authenticationService.registerUser(userDTO);
-    return ResponseEntity.status(201).body("Usuário registrado com sucesso");
-}
+
+    @PostMapping("/register")
+    @Operation(
+        summary = "Registrar novo usuário",
+        description = "Cria um novo usuário no sistema e retorna uma mensagem de sucesso.",
+        responses = {
+            @ApiResponse(responseCode = "200", description = "Usuário registrado com sucesso"),
+            @ApiResponse(responseCode = "400", description = "Erro ao registrar usuário")
+        }
+    )
+    public ResponseEntity<?> saveUser(
+        @RequestBody(description = "Dados para registro de usuário", required = true, 
+                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserRequestDTO.class)))
+        @org.springframework.web.bind.annotation.RequestBody UserRequestDTO user
+    ) {
+        authenticationService.registerUser(user);
+
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Usuário registrado com sucesso");
+
+        return ResponseEntity.ok(response);
+    }
 }

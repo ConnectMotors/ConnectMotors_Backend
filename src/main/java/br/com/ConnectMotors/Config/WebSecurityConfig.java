@@ -37,30 +37,38 @@ public class WebSecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.csrf(csrf -> csrf.disable())
-            .exceptionHandling(exception -> exception.authenticationEntryPoint(jwtAuthenticationEntryPoint))
-            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .authorizeHttpRequests(auth -> 
-                auth
-                    // Endpoints públicos
-                    .requestMatchers("/auth/**").permitAll()
-                    .requestMatchers("/api/public/**").permitAll()
-                    .requestMatchers("/auth/**", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
-                    .requestMatchers("/uploads/**").permitAll()
+        return http
+                .csrf(csrf -> csrf.disable())
+                .exceptionHandling(exception -> exception.authenticationEntryPoint(jwtAuthenticationEntryPoint))
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(auth -> 
+                    auth
+                        // Authentication endpoints
+                        .requestMatchers("/auth/register", "/auth/login").permitAll()
+                        
+                        // Swagger documentation
+                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
 
-                    // Endpoints autenticados (qualquer usuário logado)
-                    .requestMatchers("/anuncios/**").authenticated()
+                        // Public endpoints
+                        .requestMatchers("/anuncios/marcas").permitAll()
+                        .requestMatchers("/anuncios/modelos/{marcaId}").permitAll()
 
-                    // Endpoints restritos a ROLE_ADMIN
-                    .requestMatchers("/admin/**").hasRole("ADMIN")
+                        // Admin endpoints (for car, brand, and model management)
+                        .requestMatchers("/admin/carros/**").authenticated()
+                        .requestMatchers("/admin/marcas/**").authenticated()
+                        .requestMatchers("/admin/modelos/**").authenticated()
+                        // Authenticated endpoints
+                        .requestMatchers("/anuncios/**").authenticated()
+                        .requestMatchers("/api/private").authenticated()
 
-                    // Qualquer outro endpoint exige autenticação
-                    .anyRequest().authenticated()
-            );
-        
-        // Adiciona filtro para validar tokens a cada requisição
-        http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
-        
-        return http.build();
+                        // Admin-only endpoint
+                        .requestMatchers("/api/admin").hasRole("ADMIN")
+
+
+                        // Any other request requires authentication
+                        .anyRequest().authenticated()
+                )
+                .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
+                .build();
     }
 }
