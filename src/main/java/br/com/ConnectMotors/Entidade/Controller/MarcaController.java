@@ -9,7 +9,6 @@ import br.com.ConnectMotors.Entidade.Service.MarcaService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
@@ -24,7 +23,7 @@ public class MarcaController {
     @Autowired
     private MarcaService marcaService;
 
-    @PostMapping    
+    @PostMapping
     @Operation(
         summary = "Cadastrar uma nova marca",
         description = "Cadastra uma nova marca no sistema.",
@@ -34,11 +33,11 @@ public class MarcaController {
             @ApiResponse(responseCode = "400", description = "Erro na validação dos dados fornecidos")
         }
     )
-    public ResponseEntity<Marca> cadastrarMarca(
-        @RequestBody(description = "Dados da marca a ser cadastrada", required = true, 
-                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = Marca.class)))
-        Marca marca
-    ) {
+    public ResponseEntity<Marca> cadastrarMarca(@org.springframework.web.bind.annotation.RequestBody Marca marca) {
+        if (marca == null || marca.getNome() == null || marca.getNome().isEmpty()) {
+            throw new IllegalArgumentException("O nome da marca não pode ser vazio");
+        }
+        System.out.println("Marca recebida: " + marca.getNome());
         Marca novaMarca = marcaService.cadastrarMarca(marca);
         return ResponseEntity.ok(novaMarca);
     }
@@ -69,10 +68,11 @@ public class MarcaController {
     )
     public ResponseEntity<Marca> editarMarca(
         @PathVariable Long id,
-        @RequestBody(description = "Dados da marca a ser editada", required = true, 
-                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = Marca.class)))
-        Marca marca
+        @org.springframework.web.bind.annotation.RequestBody Marca marca
     ) {
+        if (marca == null || marca.getNome() == null || marca.getNome().isEmpty()) {
+            throw new IllegalArgumentException("O nome da marca não pode ser vazio");
+        }
         Marca marcaEditada = marcaService.editarMarca(id, marca);
         if (marcaEditada != null) {
             return ResponseEntity.ok(marcaEditada);

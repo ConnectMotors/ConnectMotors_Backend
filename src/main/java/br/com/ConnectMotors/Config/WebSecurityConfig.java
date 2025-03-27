@@ -49,21 +49,21 @@ public class WebSecurityConfig {
                         // Swagger documentation
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
 
-                        // Public endpoints
-                        .requestMatchers("/anuncios/marcas").permitAll()
-                        .requestMatchers("/anuncios/modelos/{marcaId}").permitAll()
+                        // Public endpoints (GET only for anuncios)
+                        .requestMatchers("GET", "/anuncios/marcas").permitAll()
+                        .requestMatchers("GET", "/anuncios/modelos/{marcaId}").permitAll()
 
                         // Admin endpoints (for car, brand, and model management)
-                        .requestMatchers("/admin/carros/**").authenticated()
-                        .requestMatchers("/admin/marcas/**").authenticated()
-                        .requestMatchers("/admin/modelos/**").authenticated()
-                        // Authenticated endpoints
-                        .requestMatchers("/anuncios/**").authenticated()
+                        .requestMatchers("/admin/carros/**").hasRole("ADMIN")
+                        .requestMatchers("/admin/marcas/**").hasRole("ADMIN")
+                        .requestMatchers("/admin/modelos/**").hasRole("ADMIN")
+
+                        // Authenticated endpoints (POST for anuncios requires login)
+                        .requestMatchers("POST", "/anuncios").authenticated()
                         .requestMatchers("/api/private").authenticated()
 
                         // Admin-only endpoint
                         .requestMatchers("/api/admin").hasRole("ADMIN")
-
 
                         // Any other request requires authentication
                         .anyRequest().authenticated()
