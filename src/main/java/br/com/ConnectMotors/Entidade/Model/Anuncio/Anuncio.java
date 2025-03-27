@@ -42,6 +42,16 @@ public class Anuncio {
     @JoinColumn(name = "usuario_id", nullable = false)
     private User usuario;
 
+    // Campos adicionados
+    @Column(nullable = false)
+    private String cep;
+
+    @Column(nullable = false)
+    private String cidade;
+
+    @Column(nullable = false)
+    private String estado;
+
     // Getters e Setters
     public Long getId() {
         return id;
@@ -113,5 +123,30 @@ public class Anuncio {
 
     public void setUsuario(User usuario) {
         this.usuario = usuario;
+    }
+
+    // Getters e Setters para CEP, Cidade e Estado
+    public String getCep() {
+        return cep;
+    }
+
+    public void setCep(String cep) {
+        this.cep = cep;
+    }
+
+    public String getCidade() {
+        return cidade;
+    }
+
+    public void setCidade(String cidade) {
+        this.cidade = cidade;
+    }
+
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
     }
 }
