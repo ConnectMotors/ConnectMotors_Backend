@@ -22,51 +22,42 @@ import java.util.List;
 @Tag(name = "Modelo", description = "Endpoints para cadastro, edição e exclusão de modelos de veículos")
 public class ModeloController {
 
-  @Autowired
-private MarcaService marcaService;
+    @Autowired
+    private MarcaService marcaService;
 
     @Autowired
     private ModeloService modeloService;
 
-@PostMapping
-@Operation(
-    summary = "Cadastrar um novo modelo",
-    description = "Cadastra um novo modelo no sistema associado a uma marca pelo nome.",
-    responses = {
-        @ApiResponse(responseCode = "200", description = "Modelo cadastrado com sucesso", 
-                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = Modelo.class))),
-        @ApiResponse(responseCode = "400", description = "Erro na validação dos dados fornecidos")
-    }
-)
-public ResponseEntity<Modelo> cadastrarModelo(@RequestBody ModeloDTO modeloDTO) {
-    if (modeloDTO.getNome() == null || modeloDTO.getNome().isEmpty()) {
-        throw new IllegalArgumentException("O nome do modelo não pode ser vazio");
-    }
-    if (modeloDTO.getMarca() == null || modeloDTO.getMarca().isEmpty()) {
-        throw new IllegalArgumentException("O nome da marca deve ser informado");
-    }
+    @PostMapping
+    @Operation(
+        summary = "Cadastrar um novo modelo",
+        description = "Cadastra um novo modelo no sistema associado a uma marca pelo nome.",
+        responses = {
+            @ApiResponse(responseCode = "200", description = "Modelo cadastrado com sucesso",
+                         content = @Content(mediaType = "application/json", schema = @Schema(implementation = Modelo.class))),
+            @ApiResponse(responseCode = "400", description = "Erro na validação dos dados fornecidos")
+        }
+    )
+    public ResponseEntity<Modelo> cadastrarModelo(@RequestBody ModeloDTO modeloDTO) {
+        // Validações básicas no controller
+        if (modeloDTO == null || modeloDTO.getNome() == null || modeloDTO.getNome().isEmpty()) {
+            throw new IllegalArgumentException("O nome do modelo não pode ser vazio");
+        }
+        if (modeloDTO.getMarca() == null || modeloDTO.getMarca().isEmpty()) {
+            throw new IllegalArgumentException("O nome da marca deve ser informado");
+        }
 
-    // Busca a marca pelo nome
-    Marca marca = marcaService.buscarPorNome(modeloDTO.getMarca());
-    if (marca == null) {
-        throw new IllegalArgumentException("Marca não encontrada");
+        // Delega ao serviço a criação do modelo
+        Modelo novoModelo = modeloService.cadastrarModelo(modeloDTO);
+        return ResponseEntity.ok(novoModelo);
     }
-
-    // Cria o modelo e associa a marca
-    Modelo modelo = new Modelo();
-    modelo.setNome(modeloDTO.getNome());
-    modelo.setMarca(marca);
-
-    Modelo novoModelo = modeloService.cadastrarModelo(modelo);
-    return ResponseEntity.ok(novoModelo);
-}
 
     @GetMapping
     @Operation(
         summary = "Listar todos os modelos",
         description = "Retorna a lista de todos os modelos cadastrados no sistema.",
         responses = {
-            @ApiResponse(responseCode = "200", description = "Lista de modelos recuperada com sucesso", 
+            @ApiResponse(responseCode = "200", description = "Lista de modelos recuperada com sucesso",
                          content = @Content(mediaType = "application/json", schema = @Schema(implementation = List.class)))
         }
     )
@@ -80,19 +71,24 @@ public ResponseEntity<Modelo> cadastrarModelo(@RequestBody ModeloDTO modeloDTO) 
         summary = "Editar um modelo existente",
         description = "Edita os dados de um modelo já cadastrado.",
         responses = {
-            @ApiResponse(responseCode = "200", description = "Modelo editado com sucesso", 
+            @ApiResponse(responseCode = "200", description = "Modelo editado com sucesso",
                          content = @Content(mediaType = "application/json", schema = @Schema(implementation = Modelo.class))),
             @ApiResponse(responseCode = "404", description = "Modelo não encontrado")
         }
     )
     public ResponseEntity<Modelo> editarModelo(
-        @PathVariable Long id,
-        @org.springframework.web.bind.annotation.RequestBody Modelo modelo
+            @PathVariable Long id,
+            @RequestBody ModeloDTO modeloDTO
     ) {
-        if (modelo == null || modelo.getNome() == null || modelo.getNome().isEmpty()) {
+        // Validações básicas no controller
+        if (modeloDTO == null || modeloDTO.getNome() == null || modeloDTO.getNome().isEmpty()) {
             throw new IllegalArgumentException("O nome do modelo não pode ser vazio");
         }
-        Modelo modeloEditado = modeloService.editarModelo(id, modelo);
+        if (modeloDTO.getMarca() == null || modeloDTO.getMarca().isEmpty()) {
+            throw new IllegalArgumentException("O nome da marca deve ser informado");
+        }
+
+        Modelo modeloEditado = modeloService.editarModelo(id, modeloDTO);
         if (modeloEditado != null) {
             return ResponseEntity.ok(modeloEditado);
         }

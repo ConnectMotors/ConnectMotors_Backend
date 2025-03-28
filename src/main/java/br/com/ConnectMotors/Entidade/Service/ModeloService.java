@@ -1,9 +1,10 @@
 package br.com.ConnectMotors.Entidade.Service;
 
 import br.com.ConnectMotors.Entidade.Model.Modelo.Modelo;
-import br.com.ConnectMotors.Entidade.Repository.MarcaRepository;
-import br.com.ConnectMotors.Entidade.Repository.ModeloRepository;
+import br.com.ConnectMotors.Entidade.Model.Modelo.ModeloDTO;
 import br.com.ConnectMotors.Entidade.Model.Marca.Marca;
+import br.com.ConnectMotors.Entidade.Repository.ModeloRepository;
+import br.com.ConnectMotors.Entidade.Repository.MarcaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,54 +20,42 @@ public class ModeloService {
     @Autowired
     private MarcaRepository marcaRepository;
 
-    // Cadastrar um novo modelo
-    public Modelo cadastrarModelo(Modelo modelo) {
-        if (modelo.getNome() == null || modelo.getNome().trim().isEmpty()) {
-            throw new IllegalArgumentException("O nome do modelo não pode ser vazio");
-        }
-        if (modelo.getMarca() == null || modelo.getMarca().getId() == null) {
-            throw new IllegalArgumentException("A marca é obrigatória para cadastrar um modelo");
-        }
+    public Modelo cadastrarModelo(ModeloDTO modeloDTO) {
+        Marca marca = marcaRepository.findByNome(modeloDTO.getMarca())
+                .orElseThrow(() -> new IllegalArgumentException("Marca não encontrada: " + modeloDTO.getMarca()));
 
-        Marca marca = marcaRepository.findById(modelo.getMarca().getId())
-                .orElseThrow(() -> new IllegalArgumentException("Marca não encontrada com o ID: " + modelo.getMarca().getId()));
-        
+        Modelo modelo = new Modelo();
+        modelo.setNome(modeloDTO.getNome());
         modelo.setMarca(marca);
+
         return modeloRepository.save(modelo);
     }
 
-    // Listar todos os modelos
     public List<Modelo> listarModelos() {
         return modeloRepository.findAll();
     }
 
-    // Listar modelos por marca
-    public List<Modelo> listarModelosPorMarca(Long marcaId) {
-        marcaRepository.findById(marcaId)
-                .orElseThrow(() -> new IllegalArgumentException("Marca não encontrada com o ID: " + marcaId));
-        
-        return modeloRepository.findByMarcaId(marcaId);
-    }
-
-    // Editar um modelo
-    public Modelo editarModelo(Long id, Modelo modelo) {
+    public Modelo editarModelo(Long id, ModeloDTO modeloDTO) {
         Optional<Modelo> modeloExistente = modeloRepository.findById(id);
-        if (modeloExistente.isPresent()) {
-            Modelo modeloAtualizado = modeloExistente.get();
-            modeloAtualizado.setNome(modelo.getNome());
-            modeloAtualizado.setMarca(modelo.getMarca()); // Atualiza a marca
-            return modeloRepository.save(modeloAtualizado);
+        if (modeloExistente.isEmpty()) {
+            return null;
         }
-        return null; // Retorna null caso o modelo não seja encontrado
+
+        Marca marca = marcaRepository.findByNome(modeloDTO.getMarca())
+                .orElseThrow(() -> new IllegalArgumentException("Marca não encontrada: " + modeloDTO.getMarca()));
+
+        Modelo modelo = modeloExistente.get();
+        modelo.setNome(modeloDTO.getNome());
+        modelo.setMarca(marca);
+
+        return modeloRepository.save(modelo);
     }
 
-    // Excluir um modelo
     public boolean excluirModelo(Long id) {
-        Optional<Modelo> modeloExistente = modeloRepository.findById(id);
-        if (modeloExistente.isPresent()) {
-            modeloRepository.delete(modeloExistente.get());
-            return true; // Retorna true se a exclusão foi bem-sucedida
+        if (!modeloRepository.existsById(id)) {
+            return false;
         }
-        return false; // Retorna false se o modelo não for encontrado
+        modeloRepository.deleteById(id);
+        return true;
     }
 }

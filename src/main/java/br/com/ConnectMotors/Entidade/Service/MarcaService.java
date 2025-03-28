@@ -44,7 +44,7 @@ public class MarcaService {
         return false;
     }
 
-    public Marca buscarPorNome(String nome) {
+    public Optional<Marca> buscarPorNome(String nome) {
         return marcaRepository.findByNome(nome);
     }
 

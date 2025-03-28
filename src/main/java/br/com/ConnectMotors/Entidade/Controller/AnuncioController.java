@@ -51,14 +51,4 @@ public class AnuncioController {
     }
 
     // Endpoint para listar modelos de uma marca específica
-    @GetMapping("/modelos/{marcaId}")
-    public ResponseEntity<List<Modelo>> listarModelosPorMarca(@PathVariable Long marcaId) {
-        List<Modelo> modelos = modeloService.listarModelosPorMarca(marcaId);
-        
-        if (modelos.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        }
-
-        return ResponseEntity.ok(modelos);
-    }
 }

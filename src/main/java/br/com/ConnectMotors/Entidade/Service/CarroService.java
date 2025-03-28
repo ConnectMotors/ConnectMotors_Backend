@@ -1,12 +1,12 @@
 package br.com.ConnectMotors.Entidade.Service;
 
 import br.com.ConnectMotors.Entidade.Model.Carro.Carro;
+import br.com.ConnectMotors.Entidade.Model.Carro.CarroDTO;
 import br.com.ConnectMotors.Entidade.Model.Marca.Marca;
 import br.com.ConnectMotors.Entidade.Model.Modelo.Modelo;
 import br.com.ConnectMotors.Entidade.Repository.CarroRepository;
 import br.com.ConnectMotors.Entidade.Repository.MarcaRepository;
 import br.com.ConnectMotors.Entidade.Repository.ModeloRepository;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,52 +24,103 @@ public class CarroService {
     @Autowired
     private ModeloRepository modeloRepository;
 
-    // Cadastrar um novo carro
-    public Carro cadastrarCarro(Carro carro) {
-        // Validações básicas
-        if (carro.getAno() <= 0) {
-            throw new IllegalArgumentException("O ano do carro deve ser maior que zero");
-        }
-        if (carro.getCor() == null || carro.getCor().isEmpty()) {
-            throw new IllegalArgumentException("A cor do carro é obrigatória");
-        }
-        if (carro.getCambio() == null || carro.getCambio().isEmpty()) {
-            throw new IllegalArgumentException("O tipo de câmbio é obrigatório");
-        }
-        if (carro.getCombustivel() == null || carro.getCombustivel().isEmpty()) {
-            throw new IllegalArgumentException("O tipo de combustível é obrigatório");
-        }
-        if (carro.getCarroceria() == null || carro.getCarroceria().isEmpty()) {
-            throw new IllegalArgumentException("O tipo de carroceria é obrigatório");
-        }
+    /**
+     * Cadastra um carro a partir de um CarroDTO, buscando Marca e Modelo pelo nome.
+     * @param carroDTO Dados do carro em formato DTO.
+     * @return Entidade Carro salva no banco de dados.
+     * @throws IllegalArgumentException Se os dados forem inválidos ou Marca/Modelo não existirem.
+     */
+    public Carro cadastrarCarro(CarroDTO carroDTO) {
+        validarCarroDTO(carroDTO);
 
-        // Verifica se a marca existe
-        Marca marca = marcaRepository.findById(carro.getMarca().getId())
-                .orElseThrow(() -> new IllegalArgumentException("Marca não encontrada com o ID: " + carro.getMarca().getId()));
+        Marca marca = buscarMarcaPorNome(carroDTO.getMarca());
+        Modelo modelo = buscarModeloPorNome(carroDTO.getModelo());
 
-        // Verifica se o modelo existe
-        Modelo modelo = modeloRepository.findById(carro.getModelo().getId())
-                .orElseThrow(() -> new IllegalArgumentException("Modelo não encontrado com o ID: " + carro.getModelo().getId()));
-
-        // Associa as entidades validadas
-        carro.setMarca(marca);
-        carro.setModelo(modelo);
-
-        // Salva o carro
+        Carro carro = criarEntidadeCarro(carroDTO, marca, modelo);
         return carroRepository.save(carro);
     }
 
-    // Listar todos os carros
+    /**
+     * Cadastra um carro diretamente a partir da entidade Carro.
+     * @param carro Entidade Carro com Marca e Modelo já associados.
+     * @return Entidade Carro salva no banco de dados.
+     * @throws IllegalArgumentException Se os dados forem inválidos.
+     */
+    public Carro cadastrarCarro(Carro carro) {
+        validarCarro(carro);
+        return carroRepository.save(carro);
+    }
+
+    /**
+     * Lista todos os carros cadastrados.
+     * @return Lista de entidades Carro.
+     */
     public List<Carro> listarCarros() {
         return carroRepository.findAll();
     }
 
-    // Excluir um carro
+    /**
+     * Exclui um carro pelo ID.
+     * @param id ID do carro a ser excluído.
+     * @return true se excluído com sucesso.
+     * @throws IllegalArgumentException Se o carro não for encontrado.
+     */
     public boolean excluirCarro(Long id) {
         if (!carroRepository.existsById(id)) {
             throw new IllegalArgumentException("Carro não encontrado com o ID: " + id);
         }
         carroRepository.deleteById(id);
         return true;
+    }
+
+    // Métodos auxiliares privados
+
+    private void validarCarroDTO(CarroDTO carroDTO) {
+        if (carroDTO == null || carroDTO.getMarca() == null || carroDTO.getMarca().isEmpty() ||
+            carroDTO.getModelo() == null || carroDTO.getModelo().isEmpty() ||
+            carroDTO.getCor() == null || carroDTO.getCor().isEmpty() ||
+            carroDTO.getCambio() == null || carroDTO.getCambio().isEmpty() ||
+            carroDTO.getCombustivel() == null || carroDTO.getCombustivel().isEmpty() ||
+            carroDTO.getCarroceria() == null || carroDTO.getCarroceria().isEmpty()) {
+            throw new IllegalArgumentException("Todos os campos obrigatórios devem ser preenchidos");
+        }
+        if (carroDTO.getAno() <= 0) {
+            throw new IllegalArgumentException("O ano do carro deve ser maior que zero");
+        }
+    }
+
+    private void validarCarro(Carro carro) {
+        if (carro == null || carro.getMarca() == null || carro.getModelo() == null ||
+            carro.getCor() == null || carro.getCor().isEmpty() ||
+            carro.getCambio() == null || carro.getCambio().isEmpty() ||
+            carro.getCombustivel() == null || carro.getCombustivel().isEmpty() ||
+            carro.getCarroceria() == null || carro.getCarroceria().isEmpty()) {
+            throw new IllegalArgumentException("Todos os campos obrigatórios devem ser preenchidos");
+        }
+        if (carro.getAno() <= 0) {
+            throw new IllegalArgumentException("O ano do carro deve ser maior que zero");
+        }
+    }
+
+    private Marca buscarMarcaPorNome(String nome) {
+        return marcaRepository.findByNome(nome)
+                .orElseThrow(() -> new IllegalArgumentException("Marca não encontrada: " + nome));
+    }
+
+    private Modelo buscarModeloPorNome(String nome) {
+        return modeloRepository.findByNome(nome)
+                .orElseThrow(() -> new IllegalArgumentException("Modelo não encontrado: " + nome));
+    }
+
+    private Carro criarEntidadeCarro(CarroDTO carroDTO, Marca marca, Modelo modelo) {
+        Carro carro = new Carro();
+        carro.setMarca(marca);
+        carro.setModelo(modelo);
+        carro.setAno(carroDTO.getAno());
+        carro.setCor(carroDTO.getCor());
+        carro.setCambio(carroDTO.getCambio());
+        carro.setCombustivel(carroDTO.getCombustivel());
+        carro.setCarroceria(carroDTO.getCarroceria());
+        return carro;
     }
 }

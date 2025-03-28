@@ -1,6 +1,7 @@
 package br.com.ConnectMotors.Entidade.Controller;
 
 import br.com.ConnectMotors.Entidade.Model.Carro.Carro;
+import br.com.ConnectMotors.Entidade.Model.Carro.CarroDTO;
 import br.com.ConnectMotors.Entidade.Service.CarroService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -22,32 +23,33 @@ public class CarroController {
     @Autowired
     private CarroService carroService;
 
-    @PostMapping
-    @Operation(
-        summary = "Cadastrar um novo carro",
-        description = "Cadastra um novo carro no sistema.",
-        responses = {
-            @ApiResponse(responseCode = "200", description = "Carro cadastrado com sucesso", 
-                         content = @Content(mediaType = "application/json", schema = @Schema(implementation = Carro.class))),
-            @ApiResponse(responseCode = "400", description = "Erro na validação dos dados fornecidos")
-        }
-    )
-    public ResponseEntity<Carro> cadastrarCarro(@RequestBody Carro carro) {
-        // Validação básica no controller
-        if (carro == null || carro.getMarca() == null || carro.getModelo() == null ||
-            carro.getCor() == null || carro.getCor().isEmpty() ||
-            carro.getCambio() == null || carro.getCambio().isEmpty() ||
-            carro.getCombustivel() == null || carro.getCombustivel().isEmpty() ||
-            carro.getCarroceria() == null || carro.getCarroceria().isEmpty()) {
-            throw new IllegalArgumentException("Todos os campos obrigatórios (marca, modelo, cor, câmbio, combustível e carroceria) devem ser preenchidos");
-        }
-        if (carro.getAno() <= 0) {
-            throw new IllegalArgumentException("O ano do carro deve ser maior que zero");
-        }
-
-        Carro novoCarro = carroService.cadastrarCarro(carro);
-        return ResponseEntity.ok(novoCarro);
+@PostMapping
+@Operation(
+    summary = "Cadastrar um novo carro",
+    description = "Cadastra um novo carro no sistema.",
+    responses = {
+        @ApiResponse(responseCode = "200", description = "Carro cadastrado com sucesso", 
+                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = Carro.class))),
+        @ApiResponse(responseCode = "400", description = "Erro na validação dos dados fornecidos")
     }
+)
+public ResponseEntity<Carro> cadastrarCarro(@RequestBody CarroDTO carroDTO) {
+    // Validação básica no controller
+    if (carroDTO == null || carroDTO.getMarca() == null || carroDTO.getMarca().isEmpty() ||
+        carroDTO.getModelo() == null || carroDTO.getModelo().isEmpty() ||
+        carroDTO.getCor() == null || carroDTO.getCor().isEmpty() ||
+        carroDTO.getCambio() == null || carroDTO.getCambio().isEmpty() ||
+        carroDTO.getCombustivel() == null || carroDTO.getCombustivel().isEmpty() ||
+        carroDTO.getCarroceria() == null || carroDTO.getCarroceria().isEmpty()) {
+        throw new IllegalArgumentException("Todos os campos obrigatórios (marca, modelo, cor, câmbio, combustível e carroceria) devem ser preenchidos");
+    }
+    if (carroDTO.getAno() <= 0) {
+        throw new IllegalArgumentException("O ano do carro deve ser maior que zero");
+    }
+
+    Carro novoCarro = carroService.cadastrarCarro(carroDTO); // Método atualizado no service
+    return ResponseEntity.ok(novoCarro);
+}
 
     @GetMapping
     @Operation(
