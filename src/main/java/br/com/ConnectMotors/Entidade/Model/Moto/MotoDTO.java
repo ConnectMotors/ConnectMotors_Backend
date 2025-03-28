@@ -1,53 +1,29 @@
 package br.com.ConnectMotors.Entidade.Model.Moto;
 
-import br.com.ConnectMotors.Entidade.Model.Marca.Marca;
-import br.com.ConnectMotors.Entidade.Model.Modelo.Modelo;
-import jakarta.persistence.*;
-
-@Entity
-public class Moto {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @ManyToOne
-    @JoinColumn(name = "marca_id", nullable = false)
-    private Marca marca;
-
-    @ManyToOne
-    @JoinColumn(name = "modelo_id", nullable = false)
-    private Modelo modelo;
-
+public class MotoDTO {
+    private String marca;       // Nome da marca
+    private String modelo;      // Nome do modelo
     private String cor;
     private int ano;
-    private String freio;        // Ex.: "Disco", "Tambor"
-    private String partida;      // Ex.: "Elétrica", "Pedal"
-    private int cilindrada;      // Ex.: 150, 300 (em cc)
-    private String combustivel;  // Ex.: "Gasolina", "Flex"
+    private String freio;
+    private String partida;
+    private int cilindrada;
+    private String combustivel;
 
     // Getters e Setters
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Marca getMarca() {
+    public String getMarca() {
         return marca;
     }
 
-    public void setMarca(Marca marca) {
+    public void setMarca(String marca) {
         this.marca = marca;
     }
 
-    public Modelo getModelo() {
+    public String getModelo() {
         return modelo;
     }
 
-    public void setModelo(Modelo modelo) {
+    public void setModelo(String modelo) {
         this.modelo = modelo;
     }
 

@@ -3,9 +3,7 @@ package br.com.ConnectMotors.Entidade.Controller;
 import br.com.ConnectMotors.Entidade.Model.Anuncio.Anuncio;
 import br.com.ConnectMotors.Entidade.Service.AnuncioService;
 import br.com.ConnectMotors.Entidade.Service.MarcaService;
-import br.com.ConnectMotors.Entidade.Service.ModeloService;
 import br.com.ConnectMotors.Entidade.Model.Marca.Marca;
-import br.com.ConnectMotors.Entidade.Model.Modelo.Modelo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,9 +20,6 @@ public class AnuncioController {
 
     @Autowired
     private MarcaService marcaService;
-
-    @Autowired
-    private ModeloService modeloService;
 
     // Endpoint para criar um anúncio
     @PostMapping

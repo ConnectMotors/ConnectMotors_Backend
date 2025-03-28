@@ -1,9 +1,7 @@
 package br.com.ConnectMotors.Entidade.Controller;
 
-import br.com.ConnectMotors.Entidade.Model.Marca.Marca;
 import br.com.ConnectMotors.Entidade.Model.Modelo.Modelo;
 import br.com.ConnectMotors.Entidade.Model.Modelo.ModeloDTO;
-import br.com.ConnectMotors.Entidade.Service.MarcaService;
 import br.com.ConnectMotors.Entidade.Service.ModeloService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -21,9 +19,6 @@ import java.util.List;
 @CrossOrigin
 @Tag(name = "Modelo", description = "Endpoints para cadastro, edição e exclusão de modelos de veículos")
 public class ModeloController {
-
-    @Autowired
-    private MarcaService marcaService;
 
     @Autowired
     private ModeloService modeloService;
