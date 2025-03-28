@@ -37,7 +37,6 @@ public class MarcaController {
         if (marca == null || marca.getNome() == null || marca.getNome().isEmpty()) {
             throw new IllegalArgumentException("O nome da marca não pode ser vazio");
         }
-        System.out.println("Marca recebida: " + marca.getNome());
         Marca novaMarca = marcaService.cadastrarMarca(marca);
         return ResponseEntity.ok(novaMarca);
     }

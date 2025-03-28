@@ -1,6 +1,7 @@
 package br.com.ConnectMotors.Entidade.Model.Modelo;
 
 import br.com.ConnectMotors.Entidade.Model.Marca.Marca;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
 @Entity
@@ -10,11 +11,11 @@ public class Modelo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
     private String nome;
 
     @ManyToOne
     @JoinColumn(name = "marca_id", nullable = false)
+    @JsonBackReference // Evita serialização recursiva
     private Marca marca;
 
     // Getters e Setters

@@ -1,11 +1,13 @@
 package br.com.ConnectMotors.Entidade.Controller;
 
+import br.com.ConnectMotors.Entidade.Model.Marca.Marca;
 import br.com.ConnectMotors.Entidade.Model.Modelo.Modelo;
+import br.com.ConnectMotors.Entidade.Model.Modelo.ModeloDTO;
+import br.com.ConnectMotors.Entidade.Service.MarcaService;
 import br.com.ConnectMotors.Entidade.Service.ModeloService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,27 +22,44 @@ import java.util.List;
 @Tag(name = "Modelo", description = "Endpoints para cadastro, edição e exclusão de modelos de veículos")
 public class ModeloController {
 
+  @Autowired
+private MarcaService marcaService;
+
     @Autowired
     private ModeloService modeloService;
 
-    @PostMapping
-    @Operation(
-        summary = "Cadastrar um novo modelo",
-        description = "Cadastra um novo modelo no sistema.",
-        responses = {
-            @ApiResponse(responseCode = "200", description = "Modelo cadastrado com sucesso", 
-                         content = @Content(mediaType = "application/json", schema = @Schema(implementation = Modelo.class))),
-            @ApiResponse(responseCode = "400", description = "Erro na validação dos dados fornecidos")
-        }
-    )
-    public ResponseEntity<Modelo> cadastrarModelo(
-        @RequestBody(description = "Dados do modelo a ser cadastrado", required = true, 
-                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = Modelo.class)))
-        Modelo modelo
-    ) {
-        Modelo novoModelo = modeloService.cadastrarModelo(modelo);
-        return ResponseEntity.ok(novoModelo);
+@PostMapping
+@Operation(
+    summary = "Cadastrar um novo modelo",
+    description = "Cadastra um novo modelo no sistema associado a uma marca pelo nome.",
+    responses = {
+        @ApiResponse(responseCode = "200", description = "Modelo cadastrado com sucesso", 
+                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = Modelo.class))),
+        @ApiResponse(responseCode = "400", description = "Erro na validação dos dados fornecidos")
     }
+)
+public ResponseEntity<Modelo> cadastrarModelo(@RequestBody ModeloDTO modeloDTO) {
+    if (modeloDTO.getNome() == null || modeloDTO.getNome().isEmpty()) {
+        throw new IllegalArgumentException("O nome do modelo não pode ser vazio");
+    }
+    if (modeloDTO.getMarca() == null || modeloDTO.getMarca().isEmpty()) {
+        throw new IllegalArgumentException("O nome da marca deve ser informado");
+    }
+
+    // Busca a marca pelo nome
+    Marca marca = marcaService.buscarPorNome(modeloDTO.getMarca());
+    if (marca == null) {
+        throw new IllegalArgumentException("Marca não encontrada");
+    }
+
+    // Cria o modelo e associa a marca
+    Modelo modelo = new Modelo();
+    modelo.setNome(modeloDTO.getNome());
+    modelo.setMarca(marca);
+
+    Modelo novoModelo = modeloService.cadastrarModelo(modelo);
+    return ResponseEntity.ok(novoModelo);
+}
 
     @GetMapping
     @Operation(
@@ -68,10 +87,11 @@ public class ModeloController {
     )
     public ResponseEntity<Modelo> editarModelo(
         @PathVariable Long id,
-        @RequestBody(description = "Dados do modelo a ser editado", required = true, 
-                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = Modelo.class)))
-        Modelo modelo
+        @org.springframework.web.bind.annotation.RequestBody Modelo modelo
     ) {
+        if (modelo == null || modelo.getNome() == null || modelo.getNome().isEmpty()) {
+            throw new IllegalArgumentException("O nome do modelo não pode ser vazio");
+        }
         Modelo modeloEditado = modeloService.editarModelo(id, modelo);
         if (modeloEditado != null) {
             return ResponseEntity.ok(modeloEditado);

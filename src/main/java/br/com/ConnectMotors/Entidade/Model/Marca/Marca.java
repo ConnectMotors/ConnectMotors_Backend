@@ -1,9 +1,9 @@
 package br.com.ConnectMotors.Entidade.Model.Marca;
 
+import br.com.ConnectMotors.Entidade.Model.Modelo.Modelo;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import java.util.List;
-
-import br.com.ConnectMotors.Entidade.Model.Modelo.Modelo;
 
 @Entity
 public class Marca {
@@ -12,10 +12,10 @@ public class Marca {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
     private String nome;
 
-    @OneToMany(mappedBy = "marca", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "marca", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference // Controla a serialização da relação
     private List<Modelo> modelos;
 
     // Getters e Setters
