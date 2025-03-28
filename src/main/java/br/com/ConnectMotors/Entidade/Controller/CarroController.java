@@ -5,7 +5,6 @@ import br.com.ConnectMotors.Entidade.Service.CarroService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,11 +32,19 @@ public class CarroController {
             @ApiResponse(responseCode = "400", description = "Erro na validação dos dados fornecidos")
         }
     )
-    public ResponseEntity<Carro> cadastrarCarro(
-        @RequestBody(description = "Dados do carro a ser cadastrado", required = true, 
-                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = Carro.class)))
-        Carro carro
-    ) {
+    public ResponseEntity<Carro> cadastrarCarro(@RequestBody Carro carro) {
+        // Validação básica no controller
+        if (carro == null || carro.getMarca() == null || carro.getModelo() == null ||
+            carro.getCor() == null || carro.getCor().isEmpty() ||
+            carro.getCambio() == null || carro.getCambio().isEmpty() ||
+            carro.getCombustivel() == null || carro.getCombustivel().isEmpty() ||
+            carro.getCarroceria() == null || carro.getCarroceria().isEmpty()) {
+            throw new IllegalArgumentException("Todos os campos obrigatórios (marca, modelo, cor, câmbio, combustível e carroceria) devem ser preenchidos");
+        }
+        if (carro.getAno() <= 0) {
+            throw new IllegalArgumentException("O ano do carro deve ser maior que zero");
+        }
+
         Carro novoCarro = carroService.cadastrarCarro(carro);
         return ResponseEntity.ok(novoCarro);
     }
@@ -58,7 +65,7 @@ public class CarroController {
 
     @PutMapping("/{id}")
     @Operation(
-        summary = "Editar um carro existente",
+        summary = "Editing um carro existente",
         description = "Edita os dados de um carro já cadastrado.",
         responses = {
             @ApiResponse(responseCode = "200", description = "Carro editado com sucesso", 
@@ -68,12 +75,22 @@ public class CarroController {
     )
     public ResponseEntity<Carro> editarCarro(
         @PathVariable Long id,
-        @RequestBody(description = "Dados do carro a ser editado", required = true, 
-                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = Carro.class)))
-        Carro carro
+        @RequestBody Carro carro
     ) {
-        carro.setId(id);
-        Carro carroEditado = carroService.cadastrarCarro(carro);
+        // Validação básica no controller
+        if (carro == null || carro.getMarca() == null || carro.getModelo() == null ||
+            carro.getCor() == null || carro.getCor().isEmpty() ||
+            carro.getCambio() == null || carro.getCambio().isEmpty() ||
+            carro.getCombustivel() == null || carro.getCombustivel().isEmpty() ||
+            carro.getCarroceria() == null || carro.getCarroceria().isEmpty()) {
+            throw new IllegalArgumentException("Todos os campos obrigatórios (marca, modelo, cor, câmbio, combustível e carroceria) devem ser preenchidos");
+        }
+        if (carro.getAno() <= 0) {
+            throw new IllegalArgumentException("O ano do carro deve ser maior que zero");
+        }
+
+        carro.setId(id); // Define o ID do carro a ser editado
+        Carro carroEditado = carroService.cadastrarCarro(carro); // Reutiliza o método de cadastro para edição
         if (carroEditado != null) {
             return ResponseEntity.ok(carroEditado);
         }
