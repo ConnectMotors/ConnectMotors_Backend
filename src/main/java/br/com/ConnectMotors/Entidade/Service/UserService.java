@@ -16,9 +16,10 @@ import br.com.ConnectMotors.Entidade.Model.User.UserRequestDTO;
 import br.com.ConnectMotors.Entidade.Repository.UserRepository;
 
 import java.util.Arrays;
+import java.util.List;
 
 @Service
-public class JwtAuthenticationService {
+public class UserService {
 
     @Autowired
     private AuthenticationManager authenticationManager;
@@ -48,8 +49,10 @@ public class JwtAuthenticationService {
         User newUser = new User();
         newUser.setUsername(userDTO.getUsername());
         newUser.setPassword(bcryptEncoder.encode(userDTO.getPassword()));
-        newUser.setRoles(Arrays.asList("USER"));
-        
+        List<String> roles = userDTO.getRoles() != null && !userDTO.getRoles().isEmpty() 
+            ? userDTO.getRoles() 
+            : Arrays.asList("ROLE_USER");
+        newUser.setRoles(roles);
         userRepository.save(newUser);
     }
 

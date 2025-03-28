@@ -37,26 +37,38 @@ public class WebSecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.csrf(csrf -> csrf.disable())
-            .exceptionHandling(exception -> exception.authenticationEntryPoint(jwtAuthenticationEntryPoint))
-            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .authorizeHttpRequests(auth -> 
-                auth.requestMatchers("/auth/**").permitAll()
-                    .requestMatchers("/motorcycles").permitAll()
-                    .requestMatchers("/api/public/**").permitAll()
-                    .requestMatchers("/auth/**", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
-                    .requestMatchers("/uploads/**").permitAll()
-                    .requestMatchers("/cars").permitAll()
-                    .requestMatchers("/cars/{id}").permitAll()
-                    .requestMatchers("/cars/register").authenticated()
-                    .requestMatchers("/motorcycles/register").authenticated()
-                
-                    .anyRequest().authenticated()
-            );
-        
-        // Adiciona filtro para validar tokens a cada requisição
-        http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
-        
-        return http.build();
+        return http
+                .csrf(csrf -> csrf.disable())
+                .exceptionHandling(exception -> exception.authenticationEntryPoint(jwtAuthenticationEntryPoint))
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(auth -> 
+                    auth
+                        // Authentication endpoints
+                        .requestMatchers("/auth/register", "/auth/login").permitAll()
+                        
+                        // Swagger documentation
+                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
+
+                        // Public endpoints (GET only for anuncios)
+                        .requestMatchers("GET", "/anuncios/marcas").permitAll()
+                        .requestMatchers("GET", "/anuncios/modelos/{marcaId}").permitAll()
+
+                        // Admin endpoints (for car, brand, and model management)
+                        .requestMatchers("/admin/carros/**").hasRole("ADMIN")
+                        .requestMatchers("/admin/marcas/**").hasRole("ADMIN")
+                        .requestMatchers("/admin/modelos/**").hasRole("ADMIN")
+
+                        // Authenticated endpoints (POST for anuncios requires login)
+                        .requestMatchers("POST", "/anuncios").authenticated()
+                        .requestMatchers("/api/private").authenticated()
+
+                        // Admin-only endpoint
+                        .requestMatchers("/api/admin").hasRole("ADMIN")
+
+                        // Any other request requires authentication
+                        .anyRequest().authenticated()
+                )
+                .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
+                .build();
     }
 }

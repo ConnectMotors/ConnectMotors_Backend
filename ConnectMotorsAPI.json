@@ -1,344 +1,372 @@
 {
-  "info": {
+    "info": {
       "name": "ConnectMotors API",
-      "description": "Coleção para testar a API ConnectMotors, incluindo autenticação, motos, carros e recursos protegidos.",
+      "description": "API endpoints for ConnectMotors application",
       "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
-  },
-  "item": [
+    },
+    "item": [
       {
-          "name": "Autenticação",
-          "item": [
-              {
-                  "name": "Registrar Usuário",
-                  "request": {
-                      "method": "POST",
-                      "header": [
-                          {
-                              "key": "Content-Type",
-                              "value": "application/json"
-                          }
-                      ],
-                      "body": {
-                          "mode": "raw",
-                          "raw": "{\n    \"username\": \"testuser\",\n    \"password\": \"testpass123\"\n}"
-                      },
-                      "url": {
-                          "raw": "http://localhost:8080/auth/register",
-                          "protocol": "http",
-                          "host": ["localhost"],
-                          "port": "8080",
-                          "path": ["auth", "register"]
-                      }
-                  },
-                  "response": []
+        "name": "Anuncios",
+        "item": [
+          {
+            "name": "Criar Anúncio",
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"carro\": {\n    \"id\": 1\n  }\n}"
               },
-              {
-                  "name": "Login Usuário",
-                  "event": [
-                      {
-                          "listen": "test",
-                          "script": {
-                              "exec": [
-                                  "pm.test(\"Login bem-sucedido\", function () {",
-                                  "    pm.response.to.have.status(200);",
-                                  "    var jsonData = pm.response.json();",
-                                  "    pm.collectionVariables.set(\"jwt_token\", jsonData.token);",
-                                  "});"
-                              ],
-                              "type": "text/javascript"
-                          }
-                      }
-                  ],
-                  "request": {
-                      "method": "POST",
-                      "header": [
-                          {
-                              "key": "Content-Type",
-                              "value": "application/json"
-                          }
-                      ],
-                      "body": {
-                          "mode": "raw",
-                          "raw": "{\n    \"username\": \"testuser\",\n    \"password\": \"testpass123\"\n}"
-                      },
-                      "url": {
-                          "raw": "http://localhost:8080/auth/login",
-                          "protocol": "http",
-                          "host": ["localhost"],
-                          "port": "8080",
-                          "path": ["auth", "login"]
-                      }
-                  },
-                  "response": []
+              "url": {
+                "raw": "{{baseUrl}}/anuncios",
+                "host": ["{{baseUrl}}"],
+                "path": ["anuncios"]
               }
-          ]
+            }
+          },
+          {
+            "name": "Listar Marcas",
+            "request": {
+              "method": "GET",
+              "url": {
+                "raw": "{{baseUrl}}/anuncios/marcas",
+                "host": ["{{baseUrl}}"],
+                "path": ["anuncios", "marcas"]
+              }
+            }
+          },
+          {
+            "name": "Listar Modelos por Marca",
+            "request": {
+              "method": "GET",
+              "url": {
+                "raw": "{{baseUrl}}/anuncios/modelos/1",
+                "host": ["{{baseUrl}}"],
+                "path": ["anuncios", "modelos", "1"]
+              }
+            }
+          }
+        ]
       },
       {
-          "name": "Motorcycles",
-          "item": [
-              {
-                  "name": "Cadastrar Moto",
-                  "request": {
-                      "method": "POST",
-                      "header": [],
-                      "body": {
-                          "mode": "formdata",
-                          "formdata": [
-                              {"key": "brand", "value": "Honda", "type": "text"},
-                              {"key": "model", "value": "CBR 500", "type": "text"},
-                              {"key": "year", "value": "2023", "type": "text"},
-                              {"key": "mileage", "value": "15000", "type": "text"},
-                              {"key": "price", "value": "25000.00", "type": "text"},
-                              {"key": "images", "type": "file", "src": "path/to/moto1.jpg"},
-                              {"key": "images", "type": "file", "src": "path/to/moto2.jpg"}
-                          ]
-                      },
-                      "url": {
-                          "raw": "http://localhost:8080/motorcycles/register",
-                          "protocol": "http",
-                          "host": ["localhost"],
-                          "port": "8080",
-                          "path": ["motorcycles", "register"]
-                      }
-                  },
-                  "response": []
-              },
-              {
-                  "name": "Listar Todas as Motos",
-                  "request": {
-                      "method": "GET",
-                      "header": [],
-                      "url": {
-                          "raw": "http://localhost:8080/motorcycles",
-                          "protocol": "http",
-                          "host": ["localhost"],
-                          "port": "8080",
-                          "path": ["motorcycles"]
-                      }
-                  },
-                  "response": []
-              },
-              {
-                  "name": "Buscar Moto por ID",
-                  "request": {
-                      "method": "GET",
-                      "header": [],
-                      "url": {
-                          "raw": "http://localhost:8080/motorcycles/1",
-                          "protocol": "http",
-                          "host": ["localhost"],
-                          "port": "8080",
-                          "path": ["motorcycles", "1"]
-                      }
-                  },
-                  "response": []
-              },
-              {
-                  "name": "Atualizar Moto",
-                  "request": {
-                      "method": "PUT",
-                      "header": [
-                          {
-                              "key": "Content-Type",
-                              "value": "application/json"
-                          }
-                      ],
-                      "body": {
-                          "mode": "raw",
-                          "raw": "{\n    \"brand\": \"Yamaha\",\n    \"model\": \"MT-07\",\n    \"year\": \"2022\",\n    \"mileage\": \"20000\",\n    \"price\": \"30000.00\"\n}"
-                      },
-                      "url": {
-                          "raw": "http://localhost:8080/motorcycles/1",
-                          "protocol": "http",
-                          "host": ["localhost"],
-                          "port": "8080",
-                          "path": ["motorcycles", "1"]
-                      }
-                  },
-                  "response": []
-              },
-              {
-                  "name": "Excluir Moto",
-                  "request": {
-                      "method": "DELETE",
-                      "header": [],
-                      "url": {
-                          "raw": "http://localhost:8080/motorcycles/1",
-                          "protocol": "http",
-                          "host": ["localhost"],
-                          "port": "8080",
-                          "path": ["motorcycles", "1"]
-                      }
-                  },
-                  "response": []
+        "name": "CEP",
+        "item": [
+          {
+            "name": "Buscar CEP",
+            "request": {
+              "method": "GET",
+              "url": {
+                "raw": "{{baseUrl}}/cep/01001000",
+                "host": ["{{baseUrl}}"],
+                "path": ["cep", "01001000"]
               }
-          ]
+            }
+          }
+        ]
       },
       {
-          "name": "Cars",
-          "item": [
-              {
-                  "name": "Cadastrar Carro",
-                  "request": {
-                      "method": "POST",
-                      "header": [],
-                      "body": {
-                          "mode": "formdata",
-                          "formdata": [
-                              {"key": "brand", "value": "Toyota", "type": "text"},
-                              {"key": "model", "value": "Corolla", "type": "text"},
-                              {"key": "year", "value": "2021", "type": "text"},
-                              {"key": "mileage", "value": "30000", "type": "text"},
-                              {"key": "price", "value": "80000.00", "type": "text"},
-                              {"key": "images", "type": "file", "src": "path/to/carro1.jpg"}
-                          ]
-                      },
-                      "url": {
-                          "raw": "http://localhost:8080/cars/register",
-                          "protocol": "http",
-                          "host": ["localhost"],
-                          "port": "8080",
-                          "path": ["cars", "register"]
-                      }
-                  },
-                  "response": []
+        "name": "Admin - Carros",
+        "item": [
+          {
+            "name": "Cadastrar Carro",
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"id\": 1,\n  \"nome\": \"Carro Exemplo\"\n}"
               },
-              {
-                  "name": "Listar Todos os Carros",
-                  "request": {
-                      "method": "GET",
-                      "header": [],
-                      "url": {
-                          "raw": "http://localhost:8080/cars",
-                          "protocol": "http",
-                          "host": ["localhost"],
-                          "port": "8080",
-                          "path": ["cars"]
-                      }
-                  },
-                  "response": []
-              },
-              {
-                  "name": "Buscar Carro por ID",
-                  "request": {
-                      "method": "GET",
-                      "header": [],
-                      "url": {
-                          "raw": "http://localhost:8080/cars/1",
-                          "protocol": "http",
-                          "host": ["localhost"],
-                          "port": "8080",
-                          "path": ["cars", "1"]
-                      }
-                  },
-                  "response": []
-              },
-              {
-                  "name": "Atualizar Carro",
-                  "request": {
-                      "method": "PUT",
-                      "header": [
-                          {
-                              "key": "Content-Type",
-                              "value": "application/json"
-                          }
-                      ],
-                      "body": {
-                          "mode": "raw",
-                          "raw": "{\n    \"brand\": \"Honda\",\n    \"model\": \"Civic\",\n    \"year\": \"2020\",\n    \"mileage\": \"35000\",\n    \"price\": \"85000.00\"\n}"
-                      },
-                      "url": {
-                          "raw": "http://localhost:8080/cars/1",
-                          "protocol": "http",
-                          "host": ["localhost"],
-                          "port": "8080",
-                          "path": ["cars", "1"]
-                      }
-                  },
-                  "response": []
-              },
-              {
-                  "name": "Excluir Carro",
-                  "request": {
-                      "method": "DELETE",
-                      "header": [],
-                      "url": {
-                          "raw": "http://localhost:8080/cars/1",
-                          "protocol": "http",
-                          "host": ["localhost"],
-                          "port": "8080",
-                          "path": ["cars", "1"]
-                      }
-                  },
-                  "response": []
+              "url": {
+                "raw": "{{baseUrl}}/admin/carros",
+                "host": ["{{baseUrl}}"],
+                "path": ["admin", "carros"]
               }
-          ]
+            }
+          },
+          {
+            "name": "Listar Carros",
+            "request": {
+              "method": "GET",
+              "url": {
+                "raw": "{{baseUrl}}/admin/carros",
+                "host": ["{{baseUrl}}"],
+                "path": ["admin", "carros"]
+              }
+            }
+          },
+          {
+            "name": "Editar Carro",
+            "request": {
+              "method": "PUT",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"nome\": \"Carro Editado\"\n}"
+              },
+              "url": {
+                "raw": "{{baseUrl}}/admin/carros/1",
+                "host": ["{{baseUrl}}"],
+                "path": ["admin", "carros", "1"]
+              }
+            }
+          },
+          {
+            "name": "Excluir Carro",
+            "request": {
+              "method": "DELETE",
+              "url": {
+                "raw": "{{baseUrl}}/admin/carros/1",
+                "host": ["{{baseUrl}}"],
+                "path": ["admin", "carros", "1"]
+              }
+            }
+          }
+        ]
       },
       {
-          "name": "Resources",
-          "item": [
-              {
-                  "name": "Recurso Público",
-                  "request": {
-                      "method": "GET",
-                      "header": [],
-                      "url": {
-                          "raw": "http://localhost:8080/api/public",
-                          "protocol": "http",
-                          "host": ["localhost"],
-                          "port": "8080",
-                          "path": ["api", "public"]
-                      }
-                  },
-                  "response": []
+        "name": "Admin - Marcas",
+        "item": [
+          {
+            "name": "Cadastrar Marca",
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"nome\": \"Marca Exemplo\"\n}"
               },
-              {
-                  "name": "Recurso Privado",
-                  "request": {
-                      "method": "GET",
-                      "header": [
-                          {
-                              "key": "Authorization",
-                              "value": "Bearer {{jwt_token}}"
-                          }
-                      ],
-                      "url": {
-                          "raw": "http://localhost:8080/api/private",
-                          "protocol": "http",
-                          "host": ["localhost"],
-                          "port": "8080",
-                          "path": ["api", "private"]
-                      }
-                  },
-                  "response": []
-              },
-              {
-                  "name": "Recurso Admin",
-                  "request": {
-                      "method": "GET",
-                      "header": [
-                          {
-                              "key": "Authorization",
-                              "value": "Bearer {{jwt_token}}"
-                          }
-                      ],
-                      "url": {
-                          "raw": "http://localhost:8080/api/admin",
-                          "protocol": "http",
-                          "host": ["localhost"],
-                          "port": "8080",
-                          "path": ["api", "admin"]
-                      }
-                  },
-                  "response": []
+              "url": {
+                "raw": "{{baseUrl}}/admin/marcas",
+                "host": ["{{baseUrl}}"],
+                "path": ["admin", "marcas"]
               }
-          ]
+            }
+          },
+          {
+            "name": "Listar Marcas",
+            "request": {
+              "method": "GET",
+              "url": {
+                "raw": "{{baseUrl}}/admin/marcas",
+                "host": ["{{baseUrl}}"],
+                "path": ["admin", "marcas"]
+              }
+            }
+          },
+          {
+            "name": "Editar Marca",
+            "request": {
+              "method": "PUT",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"nome\": \"Marca Editada\"\n}"
+              },
+              "url": {
+                "raw": "{{baseUrl}}/admin/marcas/1",
+                "host": ["{{baseUrl}}"],
+                "path": ["admin", "marcas", "1"]
+              }
+            }
+          },
+          {
+            "name": "Excluir Marca",
+            "request": {
+              "method": "DELETE",
+              "url": {
+                "raw": "{{baseUrl}}/admin/marcas/1",
+                "host": ["{{baseUrl}}"],
+                "path": ["admin", "marcas", "1"]
+              }
+            }
+          }
+        ]
+      },
+      {
+        "name": "API Resources",
+        "item": [
+          {
+            "name": "Public Resource",
+            "request": {
+              "method": "GET",
+              "url": {
+                "raw": "{{baseUrl}}/api/public",
+                "host": ["{{baseUrl}}"],
+                "path": ["api", "public"]
+              }
+            }
+          },
+          {
+            "name": "Private Resource",
+            "request": {
+              "method": "GET",
+              "url": {
+                "raw": "{{baseUrl}}/api/private",
+                "host": ["{{baseUrl}}"],
+                "path": ["api", "private"]
+              }
+            }
+          },
+          {
+            "name": "Admin Resource",
+            "request": {
+              "method": "GET",
+              "url": {
+                "raw": "{{baseUrl}}/api/admin",
+                "host": ["{{baseUrl}}"],
+                "path": ["api", "admin"]
+              }
+            }
+          }
+        ]
+      },
+      {
+        "name": "Admin - Modelos",
+        "item": [
+          {
+            "name": "Cadastrar Modelo",
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"nome\": \"Modelo Exemplo\"\n}"
+              },
+              "url": {
+                "raw": "{{baseUrl}}/admin/modelos",
+                "host": ["{{baseUrl}}"],
+                "path": ["admin", "modelos"]
+              }
+            }
+          },
+          {
+            "name": "Listar Modelos",
+            "request": {
+              "method": "GET",
+              "url": {
+                "raw": "{{baseUrl}}/admin/modelos",
+                "host": ["{{baseUrl}}"],
+                "path": ["admin", "modelos"]
+              }
+            }
+          },
+          {
+            "name": "Editar Modelo",
+            "request": {
+              "method": "PUT",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"nome\": \"Modelo Editado\"\n}"
+              },
+              "url": {
+                "raw": "{{baseUrl}}/admin/modelos/1",
+                "host": ["{{baseUrl}}"],
+                "path": ["admin", "modelos", "1"]
+              }
+            }
+          },
+          {
+            "name": "Excluir Modelo",
+            "request": {
+              "method": "DELETE",
+              "url": {
+                "raw": "{{baseUrl}}/admin/modelos/1",
+                "host": ["{{baseUrl}}"],
+                "path": ["admin", "modelos", "1"]
+              }
+            }
+          }
+        ]
+      },
+      {
+        "name": "Autenticação",
+        "item": [
+          {
+            "name": "Login",
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"username\": \"user\",\n  \"password\": \"password\"\n}"
+              },
+              "url": {
+                "raw": "{{baseUrl}}/auth/login",
+                "host": ["{{baseUrl}}"],
+                "path": ["auth", "login"]
+              }
+            }
+          },
+          {
+            "name": "Registrar Usuário",
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"username\": \"newuser\",\n  \"password\": \"password\"\n}"
+              },
+              "url": {
+                "raw": "{{baseUrl}}/auth/register",
+                "host": ["{{baseUrl}}"],
+                "path": ["auth", "register"]
+              }
+            }
+          }
+        ]
       }
-  ],
-  "variable": [
+    ],
+    "variable": [
       {
-          "key": "jwt_token",
-          "value": ""
+        "key": "baseUrl",
+        "value": "http://localhost:8080",
+        "description": "Base URL for the API"
       }
-  ]
-}
+    ]
+  }
