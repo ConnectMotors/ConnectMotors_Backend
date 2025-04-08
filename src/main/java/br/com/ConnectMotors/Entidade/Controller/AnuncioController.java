@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,25 +26,34 @@ public class AnuncioController {
     @Autowired
     private MarcaService marcaService;
 
-    // Endpoint para criar um anúncio com upload de imagem
     @PostMapping(consumes = "multipart/form-data")
     public ResponseEntity<?> criarAnuncio(
             @RequestPart("anuncio") AnuncioDTO anuncioDTO,
-            @RequestPart("foto") MultipartFile foto) {
+            @RequestPart("fotos") List<MultipartFile> fotos) {
         if (!anuncioDTO.isDadosConfirmados()) {
             return ResponseEntity.badRequest().body("Os dados do anunciante devem ser confirmados.");
         }
 
-        // Atribuir a foto ao DTO
-        anuncioDTO.setFoto(foto);
+        // Verificar se a lista de fotos está vazia
+        if (fotos == null || fotos.isEmpty()) {
+            return ResponseEntity.badRequest().body("Pelo menos uma foto deve ser enviada.");
+        }
+
+        // Salvar cada imagem e coletar as URLs
+        List<String> fotoUrls = new ArrayList<>();
+        for (MultipartFile foto : fotos) {
+            String fotoUrl = anuncioService.salvarImagem(foto);
+            fotoUrls.add(fotoUrl);
+        }
+
+        // Definir as URLs no DTO
+        anuncioDTO.setFotos(fotoUrls);
 
         try {
             Anuncio novoAnuncio = anuncioService.criarAnuncio(anuncioDTO);
-
             Map<String, String> response = new HashMap<>();
             response.put("message", "Anúncio criado com sucesso!");
             response.put("anuncioId", novoAnuncio.getId().toString());
-
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -52,7 +62,6 @@ public class AnuncioController {
         }
     }
 
-    // Endpoint para listar todos os anúncios
     @GetMapping
     public ResponseEntity<List<Anuncio>> listarAnuncios() {
         List<Anuncio> anuncios = anuncioService.listarAnuncios();
@@ -64,7 +73,6 @@ public class AnuncioController {
         return ResponseEntity.ok(anuncios);
     }
 
-    // Endpoint para listar todas as marcas
     @GetMapping("/marcas")
     public ResponseEntity<List<Marca>> listarMarcas() {
         List<Marca> marcas = marcaService.listarMarcas();
@@ -76,7 +84,6 @@ public class AnuncioController {
         return ResponseEntity.ok(marcas);
     }
 
-    // Endpoint para listar modelos de uma marca específica
     @GetMapping("/marcas/{marcaId}/modelos")
     public ResponseEntity<?> listarModelosPorMarca(@PathVariable Long marcaId) {
         try {

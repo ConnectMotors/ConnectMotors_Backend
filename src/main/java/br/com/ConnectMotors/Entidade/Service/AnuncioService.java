@@ -50,8 +50,6 @@ public class AnuncioService {
 
         CepResponse cepResponse = cepController.buscarCep(anuncioDTO.getCep());
 
-        String fotoUrl = salvarImagem(anuncioDTO.getFoto());
-
         Anuncio anuncio = new Anuncio();
         anuncio.setUsuario(usuario);
         anuncio.setCarro(carro);
@@ -62,9 +60,7 @@ public class AnuncioService {
         anuncio.setCidade(cepResponse.getLocalidade());
         anuncio.setEstado(cepResponse.getUf());
         anuncio.setBairro(cepResponse.getBairro());
-        anuncio
-
-.setFotos(List.of(fotoUrl));
+        anuncio.setFotos(anuncioDTO.getFotos()); // Usa a lista de URLs do DTO
         anuncio.setDadosConfirmados(anuncioDTO.isDadosConfirmados());
 
         return anuncioRepository.save(anuncio);
@@ -74,7 +70,7 @@ public class AnuncioService {
         return anuncioRepository.findAll();
     }
 
-    private String salvarImagem(MultipartFile foto) {
+    public String salvarImagem(MultipartFile foto) {
         if (foto == null || foto.isEmpty()) {
             throw new IllegalArgumentException("Nenhum arquivo foi enviado.");
         }
