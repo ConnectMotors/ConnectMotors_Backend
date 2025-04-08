@@ -51,6 +51,7 @@ public class WebSecurityConfig {
 
                         // Public endpoints (GET only for anuncios)
                         .requestMatchers("GET", "/anuncios/marcas").permitAll()
+                        .requestMatchers("GET", "/uploads/**").permitAll()
                         .requestMatchers("GET", "/anuncios/modelos/{marcaId}").permitAll()
                         .requestMatchers("GET", "/anuncios").permitAll()
 
