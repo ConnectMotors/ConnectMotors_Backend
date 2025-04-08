@@ -1,12 +1,31 @@
 package br.com.ConnectMotors.Entidade.Model.Carro;
 
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
 public class CarroDTO {
-    private String marca; // Nome da marca
-    private String modelo; // Nome do modelo
+
+    @NotBlank(message = "O campo 'marca' é obrigatório.")
+    private String marca;
+
+    @NotBlank(message = "O campo 'modelo' é obrigatório.")
+    private String modelo;
+
+    @NotNull(message = "O campo 'ano' é obrigatório.")
+    @Min(value = 1, message = "O ano deve ser maior que zero.")
     private int ano;
+
+    @NotBlank(message = "O campo 'cor' é obrigatório.")
     private String cor;
+
+    @NotBlank(message = "O campo 'câmbio' é obrigatório.")
     private String cambio;
+
+    @NotBlank(message = "O campo 'combustível' é obrigatório.")
     private String combustivel;
+
+    @NotBlank(message = "O campo 'carroceria' é obrigatório.")
     private String carroceria;
 
     // Getters e Setters

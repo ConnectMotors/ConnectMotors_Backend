@@ -28,7 +28,6 @@ public class MotoService {
      * Cadastra uma moto a partir de um MotoDTO, buscando Marca e Modelo pelo nome.
      * @param motoDTO Dados da moto em formato DTO.
      * @return Entidade Moto salva no banco de dados.
-     * @throws IllegalArgumentException Se os dados forem inválidos ou Marca/Modelo não existirem.
      */
     public Moto cadastrarMoto(MotoDTO motoDTO) {
         validarMotoDTO(motoDTO);
@@ -41,14 +40,30 @@ public class MotoService {
     }
 
     /**
-     * Cadastra uma moto diretamente a partir da entidade Moto.
-     * @param moto Entidade Moto com Marca e Modelo já associados.
-     * @return Entidade Moto salva no banco de dados.
-     * @throws IllegalArgumentException Se os dados forem inválidos.
+     * Edita uma moto existente no banco de dados.
+     * @param id ID da moto a ser editada.
+     * @param motoDTO Dados atualizados da moto.
+     * @return Entidade Moto atualizada.
      */
-    public Moto cadastrarMoto(Moto moto) {
-        validarMoto(moto);
-        return motoRepository.save(moto);
+    public Moto editarMoto(Long id, MotoDTO motoDTO) {
+        validarMotoDTO(motoDTO);
+
+        Moto motoExistente = motoRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Moto não encontrada com o ID: " + id));
+
+        Marca marca = buscarMarcaPorNome(motoDTO.getMarca());
+        Modelo modelo = buscarModeloPorNome(motoDTO.getModelo());
+
+        motoExistente.setMarca(marca);
+        motoExistente.setModelo(modelo);
+        motoExistente.setCor(motoDTO.getCor());
+        motoExistente.setAno(motoDTO.getAno());
+        motoExistente.setFreio(motoDTO.getFreio());
+        motoExistente.setPartida(motoDTO.getPartida());
+        motoExistente.setCilindrada(motoDTO.getCilindrada());
+        motoExistente.setCombustivel(motoDTO.getCombustivel());
+
+        return motoRepository.save(motoExistente);
     }
 
     /**
@@ -63,7 +78,6 @@ public class MotoService {
      * Exclui uma moto pelo ID.
      * @param id ID da moto a ser excluída.
      * @return true se excluída com sucesso.
-     * @throws IllegalArgumentException Se a moto não for encontrada.
      */
     public boolean excluirMoto(Long id) {
         if (!motoRepository.existsById(id)) {
@@ -88,22 +102,6 @@ public class MotoService {
             throw new IllegalArgumentException("O ano da moto deve ser maior que zero");
         }
         if (motoDTO.getCilindrada() <= 0) {
-            throw new IllegalArgumentException("A cilindrada da moto deve ser maior que zero");
-        }
-    }
-
-    private void validarMoto(Moto moto) {
-        if (moto == null || moto.getMarca() == null || moto.getModelo() == null ||
-            moto.getCor() == null || moto.getCor().isEmpty() ||
-            moto.getFreio() == null || moto.getFreio().isEmpty() ||
-            moto.getPartida() == null || moto.getPartida().isEmpty() ||
-            moto.getCombustivel() == null || moto.getCombustivel().isEmpty()) {
-            throw new IllegalArgumentException("Todos os campos obrigatórios devem ser preenchidos");
-        }
-        if (moto.getAno() <= 0) {
-            throw new IllegalArgumentException("O ano da moto deve ser maior que zero");
-        }
-        if (moto.getCilindrada() <= 0) {
             throw new IllegalArgumentException("A cilindrada da moto deve ser maior que zero");
         }
     }

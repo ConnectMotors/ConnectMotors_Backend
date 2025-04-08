@@ -28,7 +28,6 @@ public class CarroService {
      * Cadastra um carro a partir de um CarroDTO, buscando Marca e Modelo pelo nome.
      * @param carroDTO Dados do carro em formato DTO.
      * @return Entidade Carro salva no banco de dados.
-     * @throws IllegalArgumentException Se os dados forem inválidos ou Marca/Modelo não existirem.
      */
     public Carro cadastrarCarro(CarroDTO carroDTO) {
         validarCarroDTO(carroDTO);
@@ -41,14 +40,29 @@ public class CarroService {
     }
 
     /**
-     * Cadastra um carro diretamente a partir da entidade Carro.
-     * @param carro Entidade Carro com Marca e Modelo já associados.
-     * @return Entidade Carro salva no banco de dados.
-     * @throws IllegalArgumentException Se os dados forem inválidos.
+     * Edita um carro existente no banco de dados.
+     * @param id ID do carro a ser editado.
+     * @param carroDTO Dados atualizados do carro.
+     * @return Entidade Carro atualizada.
      */
-    public Carro cadastrarCarro(Carro carro) {
-        validarCarro(carro);
-        return carroRepository.save(carro);
+    public Carro editarCarro(Long id, CarroDTO carroDTO) {
+        validarCarroDTO(carroDTO);
+
+        Carro carroExistente = carroRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Carro não encontrado com o ID: " + id));
+
+        Marca marca = buscarMarcaPorNome(carroDTO.getMarca());
+        Modelo modelo = buscarModeloPorNome(carroDTO.getModelo());
+
+        carroExistente.setMarca(marca);
+        carroExistente.setModelo(modelo);
+        carroExistente.setAno(carroDTO.getAno());
+        carroExistente.setCor(carroDTO.getCor());
+        carroExistente.setCambio(carroDTO.getCambio());
+        carroExistente.setCombustivel(carroDTO.getCombustivel());
+        carroExistente.setCarroceria(carroDTO.getCarroceria());
+
+        return carroRepository.save(carroExistente);
     }
 
     /**
@@ -63,7 +77,6 @@ public class CarroService {
      * Exclui um carro pelo ID.
      * @param id ID do carro a ser excluído.
      * @return true se excluído com sucesso.
-     * @throws IllegalArgumentException Se o carro não for encontrado.
      */
     public boolean excluirCarro(Long id) {
         if (!carroRepository.existsById(id)) {
@@ -85,19 +98,6 @@ public class CarroService {
             throw new IllegalArgumentException("Todos os campos obrigatórios devem ser preenchidos");
         }
         if (carroDTO.getAno() <= 0) {
-            throw new IllegalArgumentException("O ano do carro deve ser maior que zero");
-        }
-    }
-
-    private void validarCarro(Carro carro) {
-        if (carro == null || carro.getMarca() == null || carro.getModelo() == null ||
-            carro.getCor() == null || carro.getCor().isEmpty() ||
-            carro.getCambio() == null || carro.getCambio().isEmpty() ||
-            carro.getCombustivel() == null || carro.getCombustivel().isEmpty() ||
-            carro.getCarroceria() == null || carro.getCarroceria().isEmpty()) {
-            throw new IllegalArgumentException("Todos os campos obrigatórios devem ser preenchidos");
-        }
-        if (carro.getAno() <= 0) {
             throw new IllegalArgumentException("O ano do carro deve ser maior que zero");
         }
     }
