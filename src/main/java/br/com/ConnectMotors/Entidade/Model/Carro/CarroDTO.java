@@ -12,9 +12,13 @@ public class CarroDTO {
     @NotBlank(message = "O campo 'modelo' é obrigatório.")
     private String modelo;
 
-    @NotNull(message = "O campo 'ano' é obrigatório.")
-    @Min(value = 1, message = "O ano deve ser maior que zero.")
-    private int ano;
+    @NotNull(message = "O campo 'ano de fabricação' é obrigatório.")
+    @Min(value = 1886, message = "O ano de fabricação deve ser maior ou igual a 1886.") // Primeiro carro fabricado
+    private int anoFabricacao;
+
+    @NotNull(message = "O campo 'ano do modelo' é obrigatório.")
+    @Min(value = 1886, message = "O ano do modelo deve ser maior ou igual a 1886.")
+    private int anoModelo;
 
     @NotBlank(message = "O campo 'cor' é obrigatório.")
     private String cor;
@@ -27,6 +31,12 @@ public class CarroDTO {
 
     @NotBlank(message = "O campo 'carroceria' é obrigatório.")
     private String carroceria;
+
+    @NotBlank(message = "O campo 'motor' é obrigatório.")
+    private String motor;
+
+    @NotBlank(message = "O campo 'versão' é obrigatório.")
+    private String versao;
 
     // Getters e Setters
     public String getMarca() {
@@ -45,12 +55,20 @@ public class CarroDTO {
         this.modelo = modelo;
     }
 
-    public int getAno() {
-        return ano;
+    public int getAnoFabricacao() {
+        return anoFabricacao;
     }
 
-    public void setAno(int ano) {
-        this.ano = ano;
+    public void setAnoFabricacao(int anoFabricacao) {
+        this.anoFabricacao = anoFabricacao;
+    }
+
+    public int getAnoModelo() {
+        return anoModelo;
+    }
+
+    public void setAnoModelo(int anoModelo) {
+        this.anoModelo = anoModelo;
     }
 
     public String getCor() {
@@ -83,5 +101,21 @@ public class CarroDTO {
 
     public void setCarroceria(String carroceria) {
         this.carroceria = carroceria;
+    }
+
+    public String getMotor() {
+        return motor;
+    }
+
+    public void setMotor(String motor) {
+        this.motor = motor;
+    }
+
+    public String getVersao() {
+        return versao;
+    }
+
+    public void setVersao(String versao) {
+        this.versao = versao;
     }
 }

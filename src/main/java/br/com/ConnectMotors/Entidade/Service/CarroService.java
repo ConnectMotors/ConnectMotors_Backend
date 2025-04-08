@@ -56,11 +56,14 @@ public class CarroService {
 
         carroExistente.setMarca(marca);
         carroExistente.setModelo(modelo);
-        carroExistente.setAno(carroDTO.getAno());
+        carroExistente.setAnoFabricacao(carroDTO.getAnoFabricacao());
+        carroExistente.setAnoModelo(carroDTO.getAnoModelo());
         carroExistente.setCor(carroDTO.getCor());
         carroExistente.setCambio(carroDTO.getCambio());
         carroExistente.setCombustivel(carroDTO.getCombustivel());
         carroExistente.setCarroceria(carroDTO.getCarroceria());
+        carroExistente.setMotor(carroDTO.getMotor());
+        carroExistente.setVersao(carroDTO.getVersao());
 
         return carroRepository.save(carroExistente);
     }
@@ -94,11 +97,16 @@ public class CarroService {
             carroDTO.getCor() == null || carroDTO.getCor().isEmpty() ||
             carroDTO.getCambio() == null || carroDTO.getCambio().isEmpty() ||
             carroDTO.getCombustivel() == null || carroDTO.getCombustivel().isEmpty() ||
-            carroDTO.getCarroceria() == null || carroDTO.getCarroceria().isEmpty()) {
+            carroDTO.getCarroceria() == null || carroDTO.getCarroceria().isEmpty() ||
+            carroDTO.getMotor() == null || carroDTO.getMotor().isEmpty() ||
+            carroDTO.getVersao() == null || carroDTO.getVersao().isEmpty()) {
             throw new IllegalArgumentException("Todos os campos obrigatórios devem ser preenchidos");
         }
-        if (carroDTO.getAno() <= 0) {
-            throw new IllegalArgumentException("O ano do carro deve ser maior que zero");
+        if (carroDTO.getAnoFabricacao() < 1886) {
+            throw new IllegalArgumentException("O ano de fabricação deve ser maior ou igual a 1886");
+        }
+        if (carroDTO.getAnoModelo() < 1886) {
+            throw new IllegalArgumentException("O ano do modelo deve ser maior ou igual a 1886");
         }
     }
 
@@ -116,11 +124,14 @@ public class CarroService {
         Carro carro = new Carro();
         carro.setMarca(marca);
         carro.setModelo(modelo);
-        carro.setAno(carroDTO.getAno());
+        carro.setAnoFabricacao(carroDTO.getAnoFabricacao());
+        carro.setAnoModelo(carroDTO.getAnoModelo());
         carro.setCor(carroDTO.getCor());
         carro.setCambio(carroDTO.getCambio());
         carro.setCombustivel(carroDTO.getCombustivel());
         carro.setCarroceria(carroDTO.getCarroceria());
+        carro.setMotor(carroDTO.getMotor());
+        carro.setVersao(carroDTO.getVersao());
         return carro;
     }
 }

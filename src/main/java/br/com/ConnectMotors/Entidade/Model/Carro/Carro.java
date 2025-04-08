@@ -19,11 +19,14 @@ public class Carro {
     @JoinColumn(name = "modelo_id", nullable = false)
     private Modelo modelo;
 
-    private int ano;
+    private int anoFabricacao;
+    private int anoModelo;
     private String cor;
     private String cambio;
     private String combustivel;
     private String carroceria;
+    private String motor;
+    private String versao;
 
     // Getters e Setters
     public Long getId() {
@@ -50,12 +53,20 @@ public class Carro {
         this.modelo = modelo;
     }
 
-    public int getAno() {
-        return ano;
+    public int getAnoFabricacao() {
+        return anoFabricacao;
     }
 
-    public void setAno(int ano) {
-        this.ano = ano;
+    public void setAnoFabricacao(int anoFabricacao) {
+        this.anoFabricacao = anoFabricacao;
+    }
+
+    public int getAnoModelo() {
+        return anoModelo;
+    }
+
+    public void setAnoModelo(int anoModelo) {
+        this.anoModelo = anoModelo;
     }
 
     public String getCor() {
@@ -88,5 +99,21 @@ public class Carro {
 
     public void setCarroceria(String carroceria) {
         this.carroceria = carroceria;
+    }
+
+    public String getMotor() {
+        return motor;
+    }
+
+    public void setMotor(String motor) {
+        this.motor = motor;
+    }
+
+    public String getVersao() {
+        return versao;
+    }
+
+    public void setVersao(String versao) {
+        this.versao = versao;
     }
 }
