@@ -22,7 +22,7 @@ cd ConnectMotors_Backend
 
 ### 2. Inicie os containers com Docker Compose
 ```bash
-docker-compose up -d
+docker-compose up --build
 ```
 Isso irá subir o banco de dados e a aplicação Spring Boot automaticamente.
 
