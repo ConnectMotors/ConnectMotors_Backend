@@ -10,12 +10,17 @@ import br.com.ConnectMotors.Entidade.Model.User.User;
 import br.com.ConnectMotors.Entidade.Model.Carro.Carro;
 import br.com.ConnectMotors.Entidade.Repository.CarroRepository;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class AnuncioService {
@@ -30,24 +35,23 @@ public class AnuncioService {
     private CarroRepository carroRepository;
 
     @Autowired
-    private CepController cepController; // Injeção do CepController para obter dados do CEP
+    private CepController cepController;
+
+    @Value("${file.upload-dir}")
+    private String uploadDir;
 
     public Anuncio criarAnuncio(AnuncioDTO anuncioDTO) {
-        // Obter o nome de usuário da sessão ou contexto de segurança
         String username = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
-
-        // Buscar o usuário no banco de dados
         User usuario = userRepository.findByUsername(username)
                 .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado"));
 
-        // Buscar o carro pelo ID
         Carro carro = carroRepository.findById(anuncioDTO.getCarroId())
                 .orElseThrow(() -> new IllegalArgumentException("Carro não encontrado"));
 
-        // Consultar o CEP para obter a cidade, estado e bairro
         CepResponse cepResponse = cepController.buscarCep(anuncioDTO.getCep());
 
-        // Criar o anúncio
+        String fotoUrl = salvarImagem(anuncioDTO.getFoto());
+
         Anuncio anuncio = new Anuncio();
         anuncio.setUsuario(usuario);
         anuncio.setCarro(carro);
@@ -58,14 +62,52 @@ public class AnuncioService {
         anuncio.setCidade(cepResponse.getLocalidade());
         anuncio.setEstado(cepResponse.getUf());
         anuncio.setBairro(cepResponse.getBairro());
-        anuncio.setFotos(List.of(anuncioDTO.getFoto())); // Adiciona a foto como uma lista
+        anuncio
+
+.setFotos(List.of(fotoUrl));
         anuncio.setDadosConfirmados(anuncioDTO.isDadosConfirmados());
 
-        // Salvar o anúncio
         return anuncioRepository.save(anuncio);
     }
 
     public List<Anuncio> listarAnuncios() {
         return anuncioRepository.findAll();
+    }
+
+    private String salvarImagem(MultipartFile foto) {
+        if (foto == null || foto.isEmpty()) {
+            throw new IllegalArgumentException("Nenhum arquivo foi enviado.");
+        }
+
+        try {
+            String normalizedUploadDir = uploadDir.endsWith("/") ? uploadDir : uploadDir + "/";
+            String fileName = System.currentTimeMillis() + "_" + foto.getOriginalFilename();
+            String filePath = normalizedUploadDir + fileName;
+
+            File directory = new File(normalizedUploadDir);
+            if (!directory.exists()) {
+                boolean created = directory.mkdirs();
+                if (!created) {
+                    throw new IOException("Não foi possível criar o diretório: " + normalizedUploadDir);
+                }
+            }
+
+            if (!directory.canWrite()) {
+                throw new IOException("Sem permissão para escrever no diretório: " + normalizedUploadDir);
+            }
+
+            File destinationFile = new File(filePath);
+            try (FileOutputStream fos = new FileOutputStream(destinationFile)) {
+                fos.write(foto.getBytes());
+            }
+
+            if (!destinationFile.exists()) {
+                throw new IOException("Falha ao salvar o arquivo: " + filePath);
+            }
+
+            return "/uploads/" + fileName;
+        } catch (IOException e) {
+            throw new RuntimeException("Erro ao salvar a imagem: " + e.getMessage(), e);
+        }
     }
 }

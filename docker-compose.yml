@@ -1,3 +1,5 @@
+version: '3.8'
+
 services:
   db:
     image: postgres:16-alpine
@@ -16,6 +18,8 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    networks:
+      - app-network
 
   app:
     build: .
@@ -37,6 +41,15 @@ services:
       - "8080:8080"
     expose:
       - "8080"
+    volumes:
+      - ./uploads:/app/uploads
+      - ./uploads/temp:/app/uploads/temp
+    networks:
+      - app-network
 
 volumes:
   pgdata:
+
+networks:
+  app-network:
+    driver: bridge

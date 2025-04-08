@@ -1,5 +1,7 @@
 package br.com.ConnectMotors.Entidade.Model.Anuncio;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -22,8 +24,8 @@ public class AnuncioDTO {
     @NotBlank(message = "O CEP é obrigatório.")
     private String cep;
 
-    @NotBlank(message = "Pelo menos uma imagem do veículo é obrigatória.")
-    private String foto; // Pode ser uma URL ou caminho para a imagem
+    @NotBlank(message = "A foto é obrigatória.")
+    private MultipartFile foto; // Mudança de String para MultipartFile
 
     @NotNull(message = "A confirmação dos dados é obrigatória.")
     private boolean dadosConfirmados;
@@ -69,11 +71,11 @@ public class AnuncioDTO {
         this.cep = cep;
     }
 
-    public String getFoto() {
+    public MultipartFile getFoto() {
         return foto;
     }
 
-    public void setFoto(String foto) {
+    public void setFoto(MultipartFile foto) {
         this.foto = foto;
     }
 
