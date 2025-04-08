@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class MarcaService {
@@ -48,4 +49,14 @@ public class MarcaService {
         return marcaRepository.findByNome(nome);
     }
 
+    public List<String> listarModelosPorMarca(Long marcaId) {
+        // Buscar a marca pelo ID
+        Marca marca = marcaRepository.findById(marcaId)
+                .orElseThrow(() -> new IllegalArgumentException("Marca não encontrada"));
+
+        // Retornar a lista de nomes dos modelos associados à marca
+        return marca.getModelos().stream()
+                .map(modelo -> modelo.getNome())
+                .collect(Collectors.toList());
+    }
 }

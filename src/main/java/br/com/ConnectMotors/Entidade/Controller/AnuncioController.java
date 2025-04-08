@@ -1,6 +1,7 @@
 package br.com.ConnectMotors.Entidade.Controller;
 
 import br.com.ConnectMotors.Entidade.Model.Anuncio.Anuncio;
+import br.com.ConnectMotors.Entidade.Model.Anuncio.AnuncioDTO;
 import br.com.ConnectMotors.Entidade.Service.AnuncioService;
 import br.com.ConnectMotors.Entidade.Service.MarcaService;
 import br.com.ConnectMotors.Entidade.Model.Marca.Marca;
@@ -9,7 +10,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/anuncios")
@@ -23,27 +26,63 @@ public class AnuncioController {
 
     // Endpoint para criar um anúncio
     @PostMapping
-    public ResponseEntity<Anuncio> criarAnuncio(@RequestBody Anuncio anuncio) {
-        // Validar os dados do anúncio antes de salvar
-        if (anuncio == null || anuncio.getCarro() == null) {
-            return ResponseEntity.badRequest().build();
+    public ResponseEntity<?> criarAnuncio(@RequestBody AnuncioDTO anuncioDTO) {
+        if (!anuncioDTO.isDadosConfirmados()) {
+            return ResponseEntity.badRequest().body("Os dados do anunciante devem ser confirmados.");
         }
-        
-        Anuncio novoAnuncio = anuncioService.criarAnuncio(anuncio);
-        return ResponseEntity.status(HttpStatus.CREATED).body(novoAnuncio);
+
+        try {
+            Anuncio novoAnuncio = anuncioService.criarAnuncio(anuncioDTO);
+
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "Anúncio criado com sucesso!");
+            response.put("anuncioId", novoAnuncio.getId().toString());
+
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao criar o anúncio.");
+        }
     }
 
     // Endpoint para listar todas as marcas
     @GetMapping("/marcas")
     public ResponseEntity<List<Marca>> listarMarcas() {
         List<Marca> marcas = marcaService.listarMarcas();
-        
+
         if (marcas.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
 
         return ResponseEntity.ok(marcas);
     }
+    
+    @GetMapping
+    public ResponseEntity<List<Anuncio>> listarAnuncios() {
+        List<Anuncio> anuncios = anuncioService.listarAnuncios();
+    
+        if (anuncios.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+    
+        return ResponseEntity.ok(anuncios);
+    }
+
 
     // Endpoint para listar modelos de uma marca específica
+    @GetMapping("/marcas/{marcaId}/modelos")
+    public ResponseEntity<?> listarModelosPorMarca(@PathVariable Long marcaId) {
+        try {
+            List<String> modelos = marcaService.listarModelosPorMarca(marcaId);
+
+            if (modelos.isEmpty()) {
+                return ResponseEntity.noContent().build();
+            }
+
+            return ResponseEntity.ok(modelos);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 }

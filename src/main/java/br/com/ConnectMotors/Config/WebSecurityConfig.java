@@ -52,6 +52,7 @@ public class WebSecurityConfig {
                         // Public endpoints (GET only for anuncios)
                         .requestMatchers("GET", "/anuncios/marcas").permitAll()
                         .requestMatchers("GET", "/anuncios/modelos/{marcaId}").permitAll()
+                        .requestMatchers("GET", "/anuncios").permitAll()
 
                         // Admin endpoints (for car, brand, and model management)
                         .requestMatchers("/admin/carros/**").hasRole("ADMIN")

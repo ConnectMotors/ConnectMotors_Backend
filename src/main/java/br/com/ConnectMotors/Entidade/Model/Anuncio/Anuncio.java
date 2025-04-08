@@ -1,8 +1,10 @@
 package br.com.ConnectMotors.Entidade.Model.Anuncio;
 
-import br.com.ConnectMotors.Entidade.Model.Carro.Carro;
-import br.com.ConnectMotors.Entidade.Model.User.User; // Certifique-se de importar a entidade User
 import jakarta.persistence.*;
+import java.util.List;
+
+import br.com.ConnectMotors.Entidade.Model.Carro.Carro;
+import br.com.ConnectMotors.Entidade.Model.User.User;
 
 @Entity
 public class Anuncio {
@@ -13,21 +15,35 @@ public class Anuncio {
 
     @ManyToOne
     @JoinColumn(name = "usuario_id", nullable = false)
-    private User usuario;  // Associe o usuário ao anúncio
+    private User usuario;
 
     @ManyToOne
     @JoinColumn(name = "carro_id", nullable = false)
     private Carro carro;
 
+    @Column(nullable = false)
     private double preco;
-    private String descricao;
-    private String quilometragem;
-    private String placa;
-    private String foto;
 
+    @Column(nullable = false, length = 500)
+    private String descricao;
+
+    @Column(nullable = false)
+    private String quilometragem;
+
+    @Column(nullable = false)
     private String cep;
+
     private String cidade;
     private String estado;
+    private String bairro;
+
+    @ElementCollection
+    @CollectionTable(name = "anuncio_fotos", joinColumns = @JoinColumn(name = "anuncio_id"))
+    @Column(name = "foto", nullable = false)
+    private List<String> fotos; // Lista para armazenar múltiplas imagens
+
+    @Column(nullable = false)
+    private boolean dadosConfirmados;
 
     // Getters e Setters
     public Long getId() {
@@ -78,22 +94,6 @@ public class Anuncio {
         this.quilometragem = quilometragem;
     }
 
-    public String getPlaca() {
-        return placa;
-    }
-
-    public void setPlaca(String placa) {
-        this.placa = placa;
-    }
-
-    public String getFoto() {
-        return foto;
-    }
-
-    public void setFoto(String foto) {
-        this.foto = foto;
-    }
-
     public String getCep() {
         return cep;
     }
@@ -116,5 +116,29 @@ public class Anuncio {
 
     public void setEstado(String estado) {
         this.estado = estado;
+    }
+
+    public String getBairro() {
+        return bairro;
+    }
+
+    public void setBairro(String bairro) {
+        this.bairro = bairro;
+    }
+
+    public List<String> getFotos() {
+        return fotos;
+    }
+
+    public void setFotos(List<String> fotos) {
+        this.fotos = fotos;
+    }
+
+    public boolean isDadosConfirmados() {
+        return dadosConfirmados;
+    }
+
+    public void setDadosConfirmados(boolean dadosConfirmados) {
+        this.dadosConfirmados = dadosConfirmados;
     }
 }
