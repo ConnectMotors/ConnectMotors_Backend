@@ -46,16 +46,21 @@ Isso irá subir o banco de dados e a aplicação Spring Boot automaticamente.
 ---
 
 ## 📈 Fluxo da Aplicação
-O fluxo da aplicação permite que usuários realizem ações como pesquisar veículos, criar anúncios e receber recomendações personalizadas. Abaixo está uma visão geral do processo:
+O fluxo da aplicação permite que usuários comuns realizem ações como pesquisar veículos, criar anúncios e receber recomendações personalizadas, enquanto administradores gerenciam cadastros de veículos. Abaixo está uma visão geral do processo:
 
-Autenticação:
-Usuários podem fazer login ou criar uma conta.
-Ações Disponíveis:
-Pesquisar Veículos: Escolha entre carros ou motos, selecione marca, modelo e atributos, e visualize anúncios.
-Criar Anúncio: Adicione detalhes de um veículo (marca, modelo, atributos) para publicar um anúncio.
-Recomendação Personalizada: A funcionalidade IAConnect analisa o perfil do usuário e recomenda um anúncio específico com base em suas preferências.
-Interação:
-Após visualizar anúncios (seja por pesquisa ou recomendação), usuários podem enviar mensagens diretamente ao dono do anúncio.
+1. **Autenticação**:
+   - Usuários (comuns ou administradores) podem fazer login ou criar uma conta.
+2. **Ações Disponíveis (Usuário Comum)**:
+   - **Pesquisar Veículos**: Escolha entre carros ou motos, selecione marca, modelo e atributos, e visualize anúncios.
+   - **Criar Anúncio**: Adicione detalhes de um veículo (marca, modelo, atributos) para publicar um anúncio.
+   - **Recomendação Personalizada**: A funcionalidade **IAConnect** analisa o perfil do usuário e recomenda um anúncio específico com base em suas preferências.
+3. **Ações Disponíveis (Admin)**:
+   - **Marcas**: Cadastrar, editar ou excluir marcas de veículos.
+   - **Modelos**: Cadastrar, editar ou excluir modelos associados a uma marca.
+   - **Atributos Fixos**: Cadastrar, editar ou excluir atributos padrão de modelos (ex.: ano, câmbio).
+4. **Interação**:
+   - Após visualizar anúncios (seja por pesquisa ou recomendação), usuários podem enviar mensagens diretamente ao dono do anúncio.
+
 Para uma representação visual detalhada, consulte a imagem abaixo:
 
 ![Fluxo da Aplicação](Fluxo%20da%20aplicação.png)
