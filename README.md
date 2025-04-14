@@ -63,6 +63,8 @@ O fluxo da aplicação permite que usuários comuns realizem ações como pesqui
 
 Para uma representação visual detalhada, consulte a imagem abaixo:
 
+![Fluxo da Aplicação](Fluxo%20da%20aplicação.png)
+
 
 
 ---
