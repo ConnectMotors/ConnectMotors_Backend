@@ -45,9 +45,11 @@ private CorRepository corRepository;
     }
 
     public List<Anuncio> filtrarAnuncios(Long marcaId, Long modeloId, Long corId, String cambio, String combustivel,
-                                         String carroceria, Double precoMin, Double precoMax, String quilometragemMax) {
-        return anuncioRepository.findByFiltros(marcaId, modeloId, corId, cambio, combustivel, carroceria, precoMin, precoMax, quilometragemMax);
-    }
+    String carroceria, Integer anoFabricacao, Integer anoModelo, String motor,
+    String versao, Double precoMin, Double precoMax, String quilometragemMax) {
+return anuncioRepository.findByFiltros(marcaId, modeloId, corId, cambio, combustivel, carroceria, anoFabricacao,
+          anoModelo, motor, versao, precoMin, precoMax, quilometragemMax);
+}
 
     public Anuncio criarAnuncio(AnuncioDTO anuncioDTO) {
         // Valida e busca o usuário

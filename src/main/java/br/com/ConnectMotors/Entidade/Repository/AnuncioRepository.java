@@ -19,6 +19,10 @@ public interface AnuncioRepository extends JpaRepository<Anuncio, Long> {
             "AND (:cambio IS NULL OR c.cambio = :cambio) " +
             "AND (:combustivel IS NULL OR c.combustivel = :combustivel) " +
             "AND (:carroceria IS NULL OR c.carroceria = :carroceria) " +
+            "AND (:anoFabricacao IS NULL OR c.anoFabricacao = :anoFabricacao) " +
+            "AND (:anoModelo IS NULL OR c.anoModelo = :anoModelo) " +
+            "AND (:motor IS NULL OR c.motor = :motor) " +
+            "AND (:versao IS NULL OR c.versao = :versao) " +
             "AND (:precoMin IS NULL OR a.preco >= :precoMin) " +
             "AND (:precoMax IS NULL OR a.preco <= :precoMax) " +
             "AND (:quilometragemMax IS NULL OR a.quilometragem <= :quilometragemMax)")
@@ -29,6 +33,10 @@ public interface AnuncioRepository extends JpaRepository<Anuncio, Long> {
             @Param("cambio") String cambio,
             @Param("combustivel") String combustivel,
             @Param("carroceria") String carroceria,
+            @Param("anoFabricacao") Integer anoFabricacao,
+            @Param("anoModelo") Integer anoModelo,
+            @Param("motor") String motor,
+            @Param("versao") String versao,
             @Param("precoMin") Double precoMin,
             @Param("precoMax") Double precoMax,
             @Param("quilometragemMax") String quilometragemMax

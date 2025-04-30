@@ -40,31 +40,36 @@ public class AnuncioController {
         return ResponseEntity.ok(anuncios);
     }
 
-    @GetMapping("/filtros")
-    @Operation(
-        summary = "Filtrar anúncios dinamicamente",
-        description = "Filtra os anúncios cadastrados com base nos parâmetros fornecidos. Os filtros são opcionais e podem ser combinados.",
-        responses = {
-            @ApiResponse(responseCode = "200", description = "Lista de anúncios filtrada com sucesso",
-                         content = @Content(mediaType = "application/json", schema = @Schema(implementation = List.class)))
-        }
-    )
-    public ResponseEntity<List<Anuncio>> filtrarAnuncios(
-            @RequestParam(required = false) Long marcaId,
-            @RequestParam(required = false) Long modeloId,
-            @RequestParam(required = false) Long corId,
-            @RequestParam(required = false) String cambio,
-            @RequestParam(required = false) String combustivel,
-            @RequestParam(required = false) String carroceria,
-            @RequestParam(required = false) Double precoMin,
-            @RequestParam(required = false) Double precoMax,
-            @RequestParam(required = false) String quilometragemMax
-    ) {
-        List<Anuncio> anunciosFiltrados = anuncioService.filtrarAnuncios(
-                marcaId, modeloId, corId, cambio, combustivel, carroceria, precoMin, precoMax, quilometragemMax
-        );
-        return ResponseEntity.ok(anunciosFiltrados);
+@GetMapping("/filtros")
+@Operation(
+    summary = "Filtrar anúncios dinamicamente",
+    description = "Filtra os anúncios cadastrados com base nos parâmetros fornecidos. Os filtros são opcionais e podem ser combinados.",
+    responses = {
+        @ApiResponse(responseCode = "200", description = "Lista de anúncios filtrada com sucesso",
+                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = List.class)))
     }
+)
+public ResponseEntity<List<Anuncio>> filtrarAnuncios(
+        @RequestParam(required = false) Long marcaId,
+        @RequestParam(required = false) Long modeloId,
+        @RequestParam(required = false) Long corId,
+        @RequestParam(required = false) String cambio,
+        @RequestParam(required = false) String combustivel,
+        @RequestParam(required = false) String carroceria,
+        @RequestParam(required = false) Integer anoFabricacao,
+        @RequestParam(required = false) Integer anoModelo,
+        @RequestParam(required = false) String motor,
+        @RequestParam(required = false) String versao,
+        @RequestParam(required = false) Double precoMin,
+        @RequestParam(required = false) Double precoMax,
+        @RequestParam(required = false) String quilometragemMax
+) {
+    List<Anuncio> anunciosFiltrados = anuncioService.filtrarAnuncios(
+            marcaId, modeloId, corId, cambio, combustivel, carroceria, anoFabricacao, anoModelo, motor, versao,
+            precoMin, precoMax, quilometragemMax
+    );
+    return ResponseEntity.ok(anunciosFiltrados);
+}
 
     // ============================
     // Rotas Administrativas
