@@ -3,99 +3,85 @@ package br.com.ConnectMotors.Entidade.Controller;
 import br.com.ConnectMotors.Entidade.Model.Anuncio.Anuncio;
 import br.com.ConnectMotors.Entidade.Model.Anuncio.AnuncioDTO;
 import br.com.ConnectMotors.Entidade.Service.AnuncioService;
-import br.com.ConnectMotors.Entidade.Service.MarcaService;
-import br.com.ConnectMotors.Entidade.Model.Marca.Marca;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/anuncios")
+@CrossOrigin
 public class AnuncioController {
 
     @Autowired
     private AnuncioService anuncioService;
 
-    @Autowired
-    private MarcaService marcaService;
-
-    @PostMapping(consumes = "multipart/form-data")
-    public ResponseEntity<?> criarAnuncio(
-            @RequestPart("anuncio") AnuncioDTO anuncioDTO,
-            @RequestPart("fotos") List<MultipartFile> fotos) {
-        if (!anuncioDTO.isDadosConfirmados()) {
-            return ResponseEntity.badRequest().body("Os dados do anunciante devem ser confirmados.");
-        }
-
-        // Verificar se a lista de fotos está vazia
-        if (fotos == null || fotos.isEmpty()) {
-            return ResponseEntity.badRequest().body("Pelo menos uma foto deve ser enviada.");
-        }
-
-        // Salvar cada imagem e coletar as URLs
-        List<String> fotoUrls = new ArrayList<>();
-        for (MultipartFile foto : fotos) {
-            String fotoUrl = anuncioService.salvarImagem(foto);
-            fotoUrls.add(fotoUrl);
-        }
-
-        // Definir as URLs no DTO
-        anuncioDTO.setFotos(fotoUrls);
-
-        try {
-            Anuncio novoAnuncio = anuncioService.criarAnuncio(anuncioDTO);
-            Map<String, String> response = new HashMap<>();
-            response.put("message", "Anúncio criado com sucesso!");
-            response.put("anuncioId", novoAnuncio.getId().toString());
-            return ResponseEntity.status(HttpStatus.CREATED).body(response);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao criar o anúncio: " + e.getMessage());
-        }
-    }
+    // ============================
+    // Rotas Públicas
+    // ============================
 
     @GetMapping
+    @Operation(
+        summary = "Listar todos os anúncios",
+        description = "Retorna a lista de todos os anúncios cadastrados no sistema.",
+        responses = {
+            @ApiResponse(responseCode = "200", description = "Lista de anúncios recuperada com sucesso",
+                         content = @Content(mediaType = "application/json", schema = @Schema(implementation = List.class)))
+        }
+    )
     public ResponseEntity<List<Anuncio>> listarAnuncios() {
         List<Anuncio> anuncios = anuncioService.listarAnuncios();
-
-        if (anuncios.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        }
-
         return ResponseEntity.ok(anuncios);
     }
 
-    @GetMapping("/marcas")
-    public ResponseEntity<List<Marca>> listarMarcas() {
-        List<Marca> marcas = marcaService.listarMarcas();
-
-        if (marcas.isEmpty()) {
-            return ResponseEntity.noContent().build();
+    @GetMapping("/filtros")
+    @Operation(
+        summary = "Filtrar anúncios dinamicamente",
+        description = "Filtra os anúncios cadastrados com base nos parâmetros fornecidos. Os filtros são opcionais e podem ser combinados.",
+        responses = {
+            @ApiResponse(responseCode = "200", description = "Lista de anúncios filtrada com sucesso",
+                         content = @Content(mediaType = "application/json", schema = @Schema(implementation = List.class)))
         }
-
-        return ResponseEntity.ok(marcas);
+    )
+    public ResponseEntity<List<Anuncio>> filtrarAnuncios(
+            @RequestParam(required = false) Long marcaId,
+            @RequestParam(required = false) Long modeloId,
+            @RequestParam(required = false) Long corId,
+            @RequestParam(required = false) String cambio,
+            @RequestParam(required = false) String combustivel,
+            @RequestParam(required = false) String carroceria,
+            @RequestParam(required = false) Double precoMin,
+            @RequestParam(required = false) Double precoMax,
+            @RequestParam(required = false) String quilometragemMax
+    ) {
+        List<Anuncio> anunciosFiltrados = anuncioService.filtrarAnuncios(
+                marcaId, modeloId, corId, cambio, combustivel, carroceria, precoMin, precoMax, quilometragemMax
+        );
+        return ResponseEntity.ok(anunciosFiltrados);
     }
 
-    @GetMapping("/marcas/{marcaId}/modelos")
-    public ResponseEntity<?> listarModelosPorMarca(@PathVariable Long marcaId) {
-        try {
-            List<String> modelos = marcaService.listarModelosPorMarca(marcaId);
+    // ============================
+    // Rotas Administrativas
+    // ============================
 
-            if (modelos.isEmpty()) {
-                return ResponseEntity.noContent().build();
-            }
-
-            return ResponseEntity.ok(modelos);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+@PostMapping(consumes = "multipart/form-data")
+@Operation(
+    summary = "Criar um novo anúncio",
+    description = "Cadastra um novo anúncio no sistema, incluindo os dados do carro.",
+    responses = {
+        @ApiResponse(responseCode = "200", description = "Anúncio criado com sucesso",
+                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = Anuncio.class))),
+        @ApiResponse(responseCode = "400", description = "Erro na validação dos dados fornecidos")
     }
+)
+public ResponseEntity<Anuncio> criarAnuncio(@RequestPart("anuncio") @Valid AnuncioDTO anuncioDTO) {
+    Anuncio novoAnuncio = anuncioService.criarAnuncio(anuncioDTO);
+    return ResponseEntity.ok(novoAnuncio);
+}
 }

@@ -1,16 +1,21 @@
 package br.com.ConnectMotors.Entidade.Model.Carro;
 
+import br.com.ConnectMotors.Entidade.Enums.Cambio;
+import br.com.ConnectMotors.Entidade.Enums.Carroceria;
+import br.com.ConnectMotors.Entidade.Enums.Combustivel;
 import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 public class CarroDTO {
 
-    @NotBlank(message = "O campo 'marca' é obrigatório.")
-    private String marca;
+    @NotNull(message = "O campo 'marcaId' é obrigatório.")
+    private Long marcaId;
 
-    @NotBlank(message = "O campo 'modelo' é obrigatório.")
-    private String modelo;
+    @NotNull(message = "O campo 'modeloId' é obrigatório.")
+    private Long modeloId;
+
+    @NotNull(message = "O campo 'corId' é obrigatório.")
+    private Long corId;
 
     @NotNull(message = "O campo 'ano de fabricação' é obrigatório.")
     @Min(value = 1886, message = "O ano de fabricação deve ser maior ou igual a 1886.") // Primeiro carro fabricado
@@ -20,39 +25,41 @@ public class CarroDTO {
     @Min(value = 1886, message = "O ano do modelo deve ser maior ou igual a 1886.")
     private int anoModelo;
 
-    @NotBlank(message = "O campo 'cor' é obrigatório.")
-    private String cor;
+    @NotNull(message = "O campo 'câmbio' é obrigatório.")
+    private Cambio cambio;
 
-    @NotBlank(message = "O campo 'câmbio' é obrigatório.")
-    private String cambio;
+    @NotNull(message = "O campo 'combustível' é obrigatório.")
+    private Combustivel combustivel;
 
-    @NotBlank(message = "O campo 'combustível' é obrigatório.")
-    private String combustivel;
+    @NotNull(message = "O campo 'carroceria' é obrigatório.")
+    private Carroceria carroceria;
 
-    @NotBlank(message = "O campo 'carroceria' é obrigatório.")
-    private String carroceria;
-
-    @NotBlank(message = "O campo 'motor' é obrigatório.")
     private String motor;
-
-    @NotBlank(message = "O campo 'versão' é obrigatório.")
     private String versao;
 
     // Getters e Setters
-    public String getMarca() {
-        return marca;
+    public Long getMarcaId() {
+        return marcaId;
     }
 
-    public void setMarca(String marca) {
-        this.marca = marca;
+    public void setMarcaId(Long marcaId) {
+        this.marcaId = marcaId;
     }
 
-    public String getModelo() {
-        return modelo;
+    public Long getModeloId() {
+        return modeloId;
     }
 
-    public void setModelo(String modelo) {
-        this.modelo = modelo;
+    public void setModeloId(Long modeloId) {
+        this.modeloId = modeloId;
+    }
+
+    public Long getCorId() {
+        return corId;
+    }
+
+    public void setCorId(Long corId) {
+        this.corId = corId;
     }
 
     public int getAnoFabricacao() {
@@ -71,35 +78,27 @@ public class CarroDTO {
         this.anoModelo = anoModelo;
     }
 
-    public String getCor() {
-        return cor;
-    }
-
-    public void setCor(String cor) {
-        this.cor = cor;
-    }
-
-    public String getCambio() {
+    public Cambio getCambio() {
         return cambio;
     }
 
-    public void setCambio(String cambio) {
+    public void setCambio(Cambio cambio) {
         this.cambio = cambio;
     }
 
-    public String getCombustivel() {
+    public Combustivel getCombustivel() {
         return combustivel;
     }
 
-    public void setCombustivel(String combustivel) {
+    public void setCombustivel(Combustivel combustivel) {
         this.combustivel = combustivel;
     }
 
-    public String getCarroceria() {
+    public Carroceria getCarroceria() {
         return carroceria;
     }
 
-    public void setCarroceria(String carroceria) {
+    public void setCarroceria(Carroceria carroceria) {
         this.carroceria = carroceria;
     }
 

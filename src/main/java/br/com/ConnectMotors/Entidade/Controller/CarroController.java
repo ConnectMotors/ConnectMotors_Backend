@@ -7,7 +7,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -16,28 +15,16 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/admin/carros")
 @CrossOrigin
-@Tag(name = "Carro", description = "Endpoints para cadastro, edição e exclusão de carros")
+@RequestMapping("/carros")
 public class CarroController {
 
     @Autowired
     private CarroService carroService;
 
-    @PostMapping
-    @Operation(
-        summary = "Cadastrar um novo carro",
-        description = "Cadastra um novo carro no sistema.",
-        responses = {
-            @ApiResponse(responseCode = "200", description = "Carro cadastrado com sucesso",
-                         content = @Content(mediaType = "application/json", schema = @Schema(implementation = Carro.class))),
-            @ApiResponse(responseCode = "400", description = "Erro na validação dos dados fornecidos")
-        }
-    )
-    public ResponseEntity<Carro> cadastrarCarro(@Valid @RequestBody CarroDTO carroDTO) {
-        Carro novoCarro = carroService.cadastrarCarro(carroDTO);
-        return ResponseEntity.ok(novoCarro);
-    }
+    // ============================
+    // Rotas Públicas
+    // ============================
 
     @GetMapping
     @Operation(
@@ -53,7 +40,47 @@ public class CarroController {
         return ResponseEntity.ok(carros);
     }
 
-    @PutMapping("/{id}")
+    @GetMapping("/filtros")
+    @Operation(
+        summary = "Filtrar carros dinamicamente",
+        description = "Filtra os carros cadastrados com base nos parâmetros fornecidos. Os filtros são opcionais e podem ser combinados.",
+        responses = {
+            @ApiResponse(responseCode = "200", description = "Lista de carros filtrada com sucesso",
+                         content = @Content(mediaType = "application/json", schema = @Schema(implementation = List.class)))
+        }
+    )
+    public ResponseEntity<List<Carro>> filtrarCarros(
+            @RequestParam(required = false) Long marcaId,
+            @RequestParam(required = false) Long modeloId,
+            @RequestParam(required = false) Long corId,
+            @RequestParam(required = false) String cambio,
+            @RequestParam(required = false) String combustivel,
+            @RequestParam(required = false) String carroceria
+    ) {
+        List<Carro> carrosFiltrados = carroService.filtrarCarros(marcaId, modeloId, corId, cambio, combustivel, carroceria);
+        return ResponseEntity.ok(carrosFiltrados);
+    }
+
+    // ============================
+    // Rotas Administrativas
+    // ============================
+
+    @PostMapping("/admin")
+    @Operation(
+        summary = "Cadastrar um novo carro",
+        description = "Cadastra um novo carro no sistema.",
+        responses = {
+            @ApiResponse(responseCode = "200", description = "Carro cadastrado com sucesso",
+                         content = @Content(mediaType = "application/json", schema = @Schema(implementation = Carro.class))),
+            @ApiResponse(responseCode = "400", description = "Erro na validação dos dados fornecidos")
+        }
+    )
+    public ResponseEntity<Carro> cadastrarCarro(@Valid @RequestBody CarroDTO carroDTO) {
+        Carro novoCarro = carroService.cadastrarCarro(carroDTO);
+        return ResponseEntity.ok(novoCarro);
+    }
+
+    @PutMapping("/admin/{id}")
     @Operation(
         summary = "Editar um carro existente",
         description = "Edita os dados de um carro já cadastrado.",
@@ -71,7 +98,7 @@ public class CarroController {
         return ResponseEntity.ok(carroEditado);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/admin/{id}")
     @Operation(
         summary = "Excluir um carro",
         description = "Exclui um carro do sistema.",
