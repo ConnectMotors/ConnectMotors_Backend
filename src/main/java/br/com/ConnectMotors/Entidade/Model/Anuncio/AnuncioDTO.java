@@ -1,8 +1,9 @@
 package br.com.ConnectMotors.Entidade.Model.Anuncio;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 public class AnuncioDTO {
 
@@ -10,16 +11,19 @@ public class AnuncioDTO {
     private Long usuarioId;
 
     @NotBlank(message = "O CEP é obrigatório.")
+    @Pattern(regexp = "\\d{5}-\\d{3}", message = "O CEP deve estar no formato 12345-678.")
     private String cep;
 
     @NotNull(message = "O preço é obrigatório.")
     @Positive(message = "O preço deve ser um valor positivo.")
-    private double preco;
+    private Double preco;
 
     @NotBlank(message = "A descrição é obrigatória.")
+    @Size(max = 1000, message = "A descrição não pode exceder 1000 caracteres.")
     private String descricao;
 
     @NotBlank(message = "A quilometragem é obrigatória.")
+    @Pattern(regexp = "\\d+", message = "A quilometragem deve ser um número inteiro positivo.")
     private String quilometragem;
 
     // Atributos do carro
@@ -33,10 +37,14 @@ public class AnuncioDTO {
     private Long corId;
 
     @NotNull(message = "O campo 'ano de fabricação' é obrigatório.")
-    private int anoFabricacao;
+    @Min(value = 1900, message = "O ano de fabricação deve ser maior ou igual a 1900.")
+    @Max(value = 2026, message = "O ano de fabricação não pode ser maior que 2026.")
+    private Integer anoFabricacao;
 
     @NotNull(message = "O campo 'ano do modelo' é obrigatório.")
-    private int anoModelo;
+    @Min(value = 1900, message = "O ano do modelo deve ser maior ou igual a 1900.")
+    @Max(value = 2026, message = "O ano do modelo não pode ser maior que 2026.")
+    private Integer anoModelo;
 
     @NotBlank(message = "O campo 'câmbio' é obrigatório.")
     private String cambio;
@@ -47,8 +55,14 @@ public class AnuncioDTO {
     @NotBlank(message = "O campo 'carroceria' é obrigatório.")
     private String carroceria;
 
+    @Size(max = 50, message = "O motor não pode exceder 50 caracteres.")
     private String motor;
+
+    @Size(max = 100, message = "A versão não pode exceder 100 caracteres.")
     private String versao;
+
+    // Campo para upload de múltiplas imagens
+    private List<MultipartFile> imagens;
 
     // Getters e Setters
     public Long getUsuarioId() {
@@ -67,11 +81,11 @@ public class AnuncioDTO {
         this.cep = cep;
     }
 
-    public double getPreco() {
+    public Double getPreco() {
         return preco;
     }
 
-    public void setPreco(double preco) {
+    public void setPreco(Double preco) {
         this.preco = preco;
     }
 
@@ -115,19 +129,19 @@ public class AnuncioDTO {
         this.corId = corId;
     }
 
-    public int getAnoFabricacao() {
+    public Integer getAnoFabricacao() {
         return anoFabricacao;
     }
 
-    public void setAnoFabricacao(int anoFabricacao) {
+    public void setAnoFabricacao(Integer anoFabricacao) {
         this.anoFabricacao = anoFabricacao;
     }
 
-    public int getAnoModelo() {
+    public Integer getAnoModelo() {
         return anoModelo;
     }
 
-    public void setAnoModelo(int anoModelo) {
+    public void setAnoModelo(Integer anoModelo) {
         this.anoModelo = anoModelo;
     }
 
@@ -169,5 +183,13 @@ public class AnuncioDTO {
 
     public void setVersao(String versao) {
         this.versao = versao;
+    }
+
+    public List<MultipartFile> getImagens() {
+        return imagens;
+    }
+
+    public void setImagens(List<MultipartFile> imagens) {
+        this.imagens = imagens;
     }
 }

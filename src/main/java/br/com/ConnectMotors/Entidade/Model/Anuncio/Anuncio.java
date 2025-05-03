@@ -5,6 +5,8 @@ import br.com.ConnectMotors.Entidade.Model.Moto.Moto;
 import br.com.ConnectMotors.Entidade.Model.User.User;
 import jakarta.persistence.*;
 
+import java.util.List;
+
 @Entity
 public class Anuncio {
 
@@ -35,6 +37,11 @@ public class Anuncio {
 
     @Column(nullable = false)
     private String quilometragem;
+
+    @ElementCollection
+    @CollectionTable(name = "anuncio_imagens", joinColumns = @JoinColumn(name = "anuncio_id"))
+    @Column(name = "imagem_path")
+    private List<String> imagensPaths;
 
     // Getters e Setters
     public Long getId() {
@@ -99,5 +106,13 @@ public class Anuncio {
 
     public void setQuilometragem(String quilometragem) {
         this.quilometragem = quilometragem;
+    }
+
+    public List<String> getImagensPaths() {
+        return imagensPaths;
+    }
+
+    public void setImagensPaths(List<String> imagensPaths) {
+        this.imagensPaths = imagensPaths;
     }
 }

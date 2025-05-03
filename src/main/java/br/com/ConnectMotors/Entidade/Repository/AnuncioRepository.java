@@ -1,5 +1,8 @@
 package br.com.ConnectMotors.Entidade.Repository;
 
+import br.com.ConnectMotors.Entidade.Enums.Cambio;
+import br.com.ConnectMotors.Entidade.Enums.Carroceria;
+import br.com.ConnectMotors.Entidade.Enums.Combustivel;
 import br.com.ConnectMotors.Entidade.Model.Anuncio.Anuncio;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -30,9 +33,9 @@ public interface AnuncioRepository extends JpaRepository<Anuncio, Long> {
             @Param("marcaId") Long marcaId,
             @Param("modeloId") Long modeloId,
             @Param("corId") Long corId,
-            @Param("cambio") String cambio,
-            @Param("combustivel") String combustivel,
-            @Param("carroceria") String carroceria,
+            @Param("cambio") Cambio cambio,
+            @Param("combustivel") Combustivel combustivel,
+            @Param("carroceria") Carroceria carroceria,
             @Param("anoFabricacao") Integer anoFabricacao,
             @Param("anoModelo") Integer anoModelo,
             @Param("motor") String motor,
