@@ -79,117 +79,37 @@ public class CarroService {
     }
 
     /**
-     * Lista carros filtrados por marca.
-     * @param marcaId ID da marca.
-     * @return Lista de carros filtrados.
-     */
-    public List<Carro> listarCarrosPorMarca(Long marcaId) {
-        return carroRepository.findByMarcaId(marcaId);
-    }
-
-    /**
-     * Lista carros filtrados por modelo.
-     * @param modeloId ID do modelo.
-     * @return Lista de carros filtrados.
-     */
-    public List<Carro> listarCarrosPorModelo(Long modeloId) {
-        return carroRepository.findByModeloId(modeloId);
-    }
-
-    /**
-     * Lista carros filtrados por cor.
-     * @param corId ID da cor.
-     * @return Lista de carros filtrados.
-     */
-    public List<Carro> listarCarrosPorCor(Long corId) {
-        return carroRepository.findByCorId(corId);
-    }
-
-    /**
-     * Lista carros filtrados por câmbio.
-     * @param cambio Tipo de câmbio.
-     * @return Lista de carros filtrados.
-     */
-    public List<Carro> listarCarrosPorCambio(String cambio) {
-        if (cambio == null || cambio.isEmpty()) {
-            throw new IllegalArgumentException("O tipo de câmbio não pode ser nulo ou vazio.");
-        }
-        return carroRepository.findByCambio(cambio);
-    }
-
-    /**
-     * Lista carros filtrados por combustível.
-     * @param combustivel Tipo de combustível.
-     * @return Lista de carros filtrados.
-     */
-    public List<Carro> listarCarrosPorCombustivel(String combustivel) {
-        if (combustivel == null || combustivel.isEmpty()) {
-            throw new IllegalArgumentException("O tipo de combustível não pode ser nulo ou vazio.");
-        }
-        return carroRepository.findByCombustivel(combustivel);
-    }
-
-    /**
-     * Lista carros filtrados por carroceria.
-     * @param carroceria Tipo de carroceria.
-     * @return Lista de carros filtrados.
-     */
-    public List<Carro> listarCarrosPorCarroceria(String carroceria) {
-        if (carroceria == null || carroceria.isEmpty()) {
-            throw new IllegalArgumentException("O tipo de carroceria não pode ser nulo ou vazio.");
-        }
-        return carroRepository.findByCarroceria(carroceria);
-    }
-
-    /**
      * Exclui um carro pelo ID.
      * @param id ID do carro a ser excluído.
-     * @return true se excluído com sucesso.
      */
-    public boolean excluirCarro(Long id) {
+    public void excluirCarro(Long id) {
         if (!carroRepository.existsById(id)) {
             throw new IllegalArgumentException("Carro não encontrado com o ID: " + id);
         }
         carroRepository.deleteById(id);
-        return true;
     }
 
     // ============================
     // Métodos Auxiliares Privados
     // ============================
 
-    public List<Carro> filtrarCarros(Long marcaId, Long modeloId, Long corId, String cambio, String combustivel, String carroceria) {
-        // Validação de parâmetros opcionais
-        if (cambio != null && cambio.isEmpty()) {
-            throw new IllegalArgumentException("O tipo de câmbio não pode ser vazio.");
+    private void validarCarroDTO(CarroDTO carroDTO) {
+        if (carroDTO == null || carroDTO.getMarcaId() == null ||
+            carroDTO.getModeloId() == null || carroDTO.getCorId() == null ||
+            carroDTO.getCambio() == null ||
+            carroDTO.getCombustivel() == null ||
+            carroDTO.getCarroceria() == null ||
+            carroDTO.getMotor() == null || carroDTO.getMotor().isEmpty() ||
+            carroDTO.getVersao() == null || carroDTO.getVersao().isEmpty()) {
+            throw new IllegalArgumentException("Todos os campos obrigatórios devem ser preenchidos");
         }
-        if (combustivel != null && combustivel.isEmpty()) {
-            throw new IllegalArgumentException("O tipo de combustível não pode ser vazio.");
+        if (carroDTO.getAnoFabricacao() < 1886) {
+            throw new IllegalArgumentException("O ano de fabricação deve ser maior ou igual a 1886");
         }
-        if (carroceria != null && carroceria.isEmpty()) {
-            throw new IllegalArgumentException("O tipo de carroceria não pode ser vazio.");
+        if (carroDTO.getAnoModelo() < 1886) {
+            throw new IllegalArgumentException("O ano do modelo deve ser maior ou igual a 1886");
         }
-    
-        // Chama o repositório para buscar os carros com base nos filtros
-        return carroRepository.findByFiltros(marcaId, modeloId, corId, cambio, combustivel, carroceria);
     }
-private void validarCarroDTO(CarroDTO carroDTO) {
-    if (carroDTO == null || carroDTO.getMarcaId() == null ||
-        carroDTO.getModeloId() == null || carroDTO.getCorId() == null ||
-        carroDTO.getCambio() == null || // Removido isEmpty()
-        carroDTO.getCombustivel() == null || // Removido isEmpty()
-        carroDTO.getCarroceria() == null || // Removido isEmpty()
-        carroDTO.getMotor() == null || carroDTO.getMotor().isEmpty() ||
-        carroDTO.getVersao() == null || carroDTO.getVersao().isEmpty()) {
-        throw new IllegalArgumentException("Todos os campos obrigatórios devem ser preenchidos");
-    }
-    if (carroDTO.getAnoFabricacao() < 1886) {
-        throw new IllegalArgumentException("O ano de fabricação deve ser maior ou igual a 1886");
-    }
-    if (carroDTO.getAnoModelo() < 1886) {
-        throw new IllegalArgumentException("O ano do modelo deve ser maior ou igual a 1886");
-    }
-}
 
     private Marca buscarMarcaPorId(Long id) {
         return marcaRepository.findById(id)

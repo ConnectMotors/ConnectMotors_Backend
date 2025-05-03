@@ -40,27 +40,6 @@ public class CarroController {
         return ResponseEntity.ok(carros);
     }
 
-    @GetMapping("/filtros")
-    @Operation(
-        summary = "Filtrar carros dinamicamente",
-        description = "Filtra os carros cadastrados com base nos parâmetros fornecidos. Os filtros são opcionais e podem ser combinados.",
-        responses = {
-            @ApiResponse(responseCode = "200", description = "Lista de carros filtrada com sucesso",
-                         content = @Content(mediaType = "application/json", schema = @Schema(implementation = List.class)))
-        }
-    )
-    public ResponseEntity<List<Carro>> filtrarCarros(
-            @RequestParam(required = false) Long marcaId,
-            @RequestParam(required = false) Long modeloId,
-            @RequestParam(required = false) Long corId,
-            @RequestParam(required = false) String cambio,
-            @RequestParam(required = false) String combustivel,
-            @RequestParam(required = false) String carroceria
-    ) {
-        List<Carro> carrosFiltrados = carroService.filtrarCarros(marcaId, modeloId, corId, cambio, combustivel, carroceria);
-        return ResponseEntity.ok(carrosFiltrados);
-    }
-
     // ============================
     // Rotas Administrativas
     // ============================
