@@ -5,6 +5,8 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import br.com.ConnectMotors.Entidade.Model.User.UserRequestDTO;
@@ -40,8 +42,18 @@ public class UserController {
     public ResponseEntity<?> createAuthenticationToken(
         @RequestBody(description = "Dados para autenticação", required = true, 
                      content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserRequestDTO.class)))
-        @org.springframework.web.bind.annotation.RequestBody UserRequestDTO authenticationRequest
+        @Validated @org.springframework.web.bind.annotation.RequestBody UserRequestDTO authenticationRequest,
+        BindingResult bindingResult
     ) throws Exception {
+        // Verifica se há erros de validação
+        if (bindingResult.hasErrors()) {
+            Map<String, String> errors = new HashMap<>();
+            bindingResult.getFieldErrors().forEach(error -> 
+                errors.put(error.getField(), error.getDefaultMessage())
+            );
+            return ResponseEntity.badRequest().body(errors);
+        }
+        
         String token = authenticationService.authenticateUser(authenticationRequest);
         return ResponseEntity.ok(new UserResponseDTO(token));
     }
@@ -59,8 +71,25 @@ public class UserController {
     public ResponseEntity<?> saveUser(
         @RequestBody(description = "Dados para registro de usuário", required = true, 
                      content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserRequestDTO.class)))
-        @org.springframework.web.bind.annotation.RequestBody UserRequestDTO user
+        @Validated @org.springframework.web.bind.annotation.RequestBody UserRequestDTO user,
+        BindingResult bindingResult
     ) {
+        // Verifica se há erros de validação
+        if (bindingResult.hasErrors()) {
+            Map<String, String> errors = new HashMap<>();
+            bindingResult.getFieldErrors().forEach(error -> 
+                errors.put(error.getField(), error.getDefaultMessage())
+            );
+            return ResponseEntity.badRequest().body(errors);
+        }
+        
+        // Verifica se o email está presente (garantia adicional)
+        if (user.getEmail() == null || user.getEmail().trim().isEmpty()) {
+            Map<String, String> errors = new HashMap<>();
+            errors.put("email", "O email é obrigatório");
+            return ResponseEntity.badRequest().body(errors);
+        }
+        
         authenticationService.registerUser(user);
 
         Map<String, String> response = new HashMap<>();

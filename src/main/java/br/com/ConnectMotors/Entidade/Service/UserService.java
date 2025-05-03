@@ -48,6 +48,7 @@ public class UserService {
     public void registerUser(UserRequestDTO userDTO) {
         User newUser = new User();
         newUser.setUsername(userDTO.getUsername());
+        newUser.setEmail(userDTO.getEmail()); // Adicionando esta linha para definir o email
         newUser.setPassword(bcryptEncoder.encode(userDTO.getPassword()));
         List<String> roles = userDTO.getRoles() != null && !userDTO.getRoles().isEmpty() 
             ? userDTO.getRoles() 
