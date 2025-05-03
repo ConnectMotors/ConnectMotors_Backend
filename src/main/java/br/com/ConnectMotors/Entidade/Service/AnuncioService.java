@@ -9,6 +9,9 @@ import br.com.ConnectMotors.Entidade.Model.Carro.Carro;
 import br.com.ConnectMotors.Entidade.Model.User.User;
 import br.com.ConnectMotors.Entidade.Repository.AnuncioRepository;
 import br.com.ConnectMotors.Entidade.Repository.CarroRepository;
+import br.com.ConnectMotors.Entidade.Repository.MarcaRepository;
+import br.com.ConnectMotors.Entidade.Repository.ModeloRepository;
+import br.com.ConnectMotors.Entidade.Repository.CorRepository;
 import br.com.ConnectMotors.Entidade.Repository.UserRepository;
 import jakarta.validation.Valid;
 
@@ -34,17 +37,26 @@ public class AnuncioService {
     private final AnuncioRepository anuncioRepository;
     private final UserRepository userRepository;
     private final CarroRepository carroRepository;
+    private final MarcaRepository marcaRepository;
+    private final ModeloRepository modeloRepository;
+    private final CorRepository corRepository;
     private final String uploadDir;
 
     public AnuncioService(
             AnuncioRepository anuncioRepository,
             UserRepository userRepository,
             CarroRepository carroRepository,
+            MarcaRepository marcaRepository,
+            ModeloRepository modeloRepository,
+            CorRepository corRepository,
             @Value("${file.upload-dir}") String uploadDir
     ) {
         this.anuncioRepository = anuncioRepository;
         this.userRepository = userRepository;
         this.carroRepository = carroRepository;
+        this.marcaRepository = marcaRepository;
+        this.modeloRepository = modeloRepository;
+        this.corRepository = corRepository;
         this.uploadDir = uploadDir;
     }
 
@@ -79,7 +91,7 @@ public class AnuncioService {
         }
 
         try {
-            carroceriaEnum = carroceria != null && !carroceria.isEmpty() ? Carroceria.valueOf(carroceria.toUpperCase()) : null;
+            carroceriaEnum = carroceria != null && !cambio.isEmpty() ? Carroceria.valueOf(carroceria.toUpperCase()) : null;
         } catch (IllegalArgumentException e) {
             logger.warn("Carroceria inválida: {}", carroceria);
         }
@@ -101,16 +113,16 @@ public class AnuncioService {
 
         // Cria o carro com os dados fornecidos
         Carro carro = new Carro();
-        carro.setMarca(carroRepository.findMarcaById(anuncioDTO.getMarcaId())
+        carro.setMarca(marcaRepository.findById(anuncioDTO.getMarcaId())
                 .orElseThrow(() -> new IllegalArgumentException("Marca não encontrada com o ID: " + anuncioDTO.getMarcaId())));
-        carro.setModelo(carroRepository.findModeloById(anuncioDTO.getModeloId())
+        carro.setModelo(modeloRepository.findById(anuncioDTO.getModeloId())
                 .orElseThrow(() -> new IllegalArgumentException("Modelo não encontrado com o ID: " + anuncioDTO.getModeloId())));
-        carro.setCor(carroRepository.findCorById(anuncioDTO.getCorId())
+        carro.setCor(corRepository.findById(anuncioDTO.getCorId())
                 .orElseThrow(() -> new IllegalArgumentException("Cor não encontrada com o ID: " + anuncioDTO.getCorId())));
         carro.setAnoFabricacao(anuncioDTO.getAnoFabricacao());
         carro.setAnoModelo(anuncioDTO.getAnoModelo());
 
-        // Valida e define os enums
+        // Valida e definition os enums
         try {
             carro.setCambio(Cambio.valueOf(anuncioDTO.getCambio().toUpperCase()));
         } catch (IllegalArgumentException e) {

@@ -105,4 +105,6 @@ public class AnuncioController {
         Anuncio novoAnuncio = anuncioService.criarAnuncio(anuncioDTO);
         return ResponseEntity.ok(novoAnuncio);
     }
+
+    
 }
