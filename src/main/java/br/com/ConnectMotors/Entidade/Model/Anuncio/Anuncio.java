@@ -1,10 +1,11 @@
 package br.com.ConnectMotors.Entidade.Model.Anuncio;
 
-import jakarta.persistence.*;
-import java.util.List;
-
 import br.com.ConnectMotors.Entidade.Model.Carro.Carro;
+import br.com.ConnectMotors.Entidade.Model.Moto.Moto;
 import br.com.ConnectMotors.Entidade.Model.User.User;
+import jakarta.persistence.*;
+
+import java.util.List;
 
 @Entity
 public class Anuncio {
@@ -18,8 +19,15 @@ public class Anuncio {
     private User usuario;
 
     @ManyToOne
-    @JoinColumn(name = "carro_id", nullable = false)
+    @JoinColumn(name = "carro_id", nullable = true)
     private Carro carro;
+
+    @ManyToOne
+    @JoinColumn(name = "moto_id", nullable = true)
+    private Moto moto;
+
+    @Column(nullable = false)
+    private String cep;
 
     @Column(nullable = false)
     private double preco;
@@ -30,20 +38,10 @@ public class Anuncio {
     @Column(nullable = false)
     private String quilometragem;
 
-    @Column(nullable = false)
-    private String cep;
-
-    private String cidade;
-    private String estado;
-    private String bairro;
-
     @ElementCollection
-    @CollectionTable(name = "anuncio_fotos", joinColumns = @JoinColumn(name = "anuncio_id"))
-    @Column(name = "foto", nullable = false)
-    private List<String> fotos; // Lista para armazenar múltiplas imagens
-
-    @Column(nullable = false)
-    private boolean dadosConfirmados;
+    @CollectionTable(name = "anuncio_imagens", joinColumns = @JoinColumn(name = "anuncio_id"))
+    @Column(name = "imagem_path")
+    private List<String> imagensPaths;
 
     // Getters e Setters
     public Long getId() {
@@ -70,6 +68,22 @@ public class Anuncio {
         this.carro = carro;
     }
 
+    public Moto getMoto() {
+        return moto;
+    }
+
+    public void setMoto(Moto moto) {
+        this.moto = moto;
+    }
+
+    public String getCep() {
+        return cep;
+    }
+
+    public void setCep(String cep) {
+        this.cep = cep;
+    }
+
     public double getPreco() {
         return preco;
     }
@@ -94,51 +108,11 @@ public class Anuncio {
         this.quilometragem = quilometragem;
     }
 
-    public String getCep() {
-        return cep;
+    public List<String> getImagensPaths() {
+        return imagensPaths;
     }
 
-    public void setCep(String cep) {
-        this.cep = cep;
-    }
-
-    public String getCidade() {
-        return cidade;
-    }
-
-    public void setCidade(String cidade) {
-        this.cidade = cidade;
-    }
-
-    public String getEstado() {
-        return estado;
-    }
-
-    public void setEstado(String estado) {
-        this.estado = estado;
-    }
-
-    public String getBairro() {
-        return bairro;
-    }
-
-    public void setBairro(String bairro) {
-        this.bairro = bairro;
-    }
-
-    public List<String> getFotos() {
-        return fotos;
-    }
-
-    public void setFotos(List<String> fotos) {
-        this.fotos = fotos;
-    }
-
-    public boolean isDadosConfirmados() {
-        return dadosConfirmados;
-    }
-
-    public void setDadosConfirmados(boolean dadosConfirmados) {
-        this.dadosConfirmados = dadosConfirmados;
+    public void setImagensPaths(List<String> imagensPaths) {
+        this.imagensPaths = imagensPaths;
     }
 }

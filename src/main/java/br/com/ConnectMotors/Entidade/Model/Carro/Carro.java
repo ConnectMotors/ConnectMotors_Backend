@@ -1,5 +1,9 @@
 package br.com.ConnectMotors.Entidade.Model.Carro;
 
+import br.com.ConnectMotors.Entidade.Enums.Cambio;
+import br.com.ConnectMotors.Entidade.Enums.Carroceria;
+import br.com.ConnectMotors.Entidade.Enums.Combustivel;
+import br.com.ConnectMotors.Entidade.Model.Cor.Cor;
 import br.com.ConnectMotors.Entidade.Model.Marca.Marca;
 import br.com.ConnectMotors.Entidade.Model.Modelo.Modelo;
 import jakarta.persistence.*;
@@ -19,12 +23,22 @@ public class Carro {
     @JoinColumn(name = "modelo_id", nullable = false)
     private Modelo modelo;
 
+    @ManyToOne
+    @JoinColumn(name = "cor_id", nullable = false)
+    private Cor cor;
+
     private int anoFabricacao;
     private int anoModelo;
-    private String cor;
-    private String cambio;
-    private String combustivel;
-    private String carroceria;
+
+    @Enumerated(EnumType.STRING)
+    private Cambio cambio;
+
+    @Enumerated(EnumType.STRING)
+    private Combustivel combustivel;
+
+    @Enumerated(EnumType.STRING)
+    private Carroceria carroceria;
+
     private String motor;
     private String versao;
 
@@ -53,6 +67,14 @@ public class Carro {
         this.modelo = modelo;
     }
 
+    public Cor getCor() {
+        return cor;
+    }
+
+    public void setCor(Cor cor) {
+        this.cor = cor;
+    }
+
     public int getAnoFabricacao() {
         return anoFabricacao;
     }
@@ -69,35 +91,27 @@ public class Carro {
         this.anoModelo = anoModelo;
     }
 
-    public String getCor() {
-        return cor;
-    }
-
-    public void setCor(String cor) {
-        this.cor = cor;
-    }
-
-    public String getCambio() {
+    public Cambio getCambio() {
         return cambio;
     }
 
-    public void setCambio(String cambio) {
+    public void setCambio(Cambio cambio) {
         this.cambio = cambio;
     }
 
-    public String getCombustivel() {
+    public Combustivel getCombustivel() {
         return combustivel;
     }
 
-    public void setCombustivel(String combustivel) {
+    public void setCombustivel(Combustivel combustivel) {
         this.combustivel = combustivel;
     }
 
-    public String getCarroceria() {
+    public Carroceria getCarroceria() {
         return carroceria;
     }
 
-    public void setCarroceria(String carroceria) {
+    public void setCarroceria(Carroceria carroceria) {
         this.carroceria = carroceria;
     }
 

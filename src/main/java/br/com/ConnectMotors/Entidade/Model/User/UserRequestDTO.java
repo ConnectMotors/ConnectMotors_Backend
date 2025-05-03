@@ -2,11 +2,17 @@ package br.com.ConnectMotors.Entidade.Model.User;
 
 import java.util.List;
 
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 
 public class UserRequestDTO {
+
     @NotBlank(message = "O username é obrigatório")
     private String username;
+
+    @NotBlank(message = "O email é obrigatório")
+    @Email(message = "O email deve ser válido")
+    private String email;
 
     @NotBlank(message = "A senha é obrigatória")
     private String password;
@@ -16,13 +22,15 @@ public class UserRequestDTO {
     public UserRequestDTO() {
     }
 
-    public UserRequestDTO(String username, String password) {
+    public UserRequestDTO(String username, String email, String password) {
         this.username = username;
+        this.email = email;
         this.password = password;
     }
 
-    public UserRequestDTO(String username, String password, List<String> roles) {
+    public UserRequestDTO(String username, String email, String password, List<String> roles) {
         this.username = username;
+        this.email = email;
         this.password = password;
         this.roles = roles;
     }
@@ -33,6 +41,14 @@ public class UserRequestDTO {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getPassword() {
