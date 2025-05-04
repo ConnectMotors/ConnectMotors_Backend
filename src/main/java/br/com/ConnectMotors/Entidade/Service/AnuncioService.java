@@ -148,12 +148,8 @@ public class AnuncioService {
     }
 
     @Transactional
-    public Anuncio criarAnuncio(@Valid AnuncioDTO anuncioDTO) {
-        logger.info("Criando novo anúncio para o usuário ID: {}", anuncioDTO.getUsuarioId());
-
-        // Valida e busca o usuário
-        User usuario = userRepository.findById(anuncioDTO.getUsuarioId())
-                .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado com o ID: " + anuncioDTO.getUsuarioId()));
+    public Anuncio criarAnuncio(@Valid AnuncioDTO anuncioDTO, User usuario) {
+        logger.info("Criando novo anúncio para o usuário: {}", usuario.getUsername());
 
         // Consulta a API de CEP
         CepResponse cepResponse = consultarCep(anuncioDTO.getCep());

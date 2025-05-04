@@ -7,9 +7,6 @@ import java.util.List;
 
 public class AnuncioDTO {
 
-    @NotNull(message = "O ID do usuário é obrigatório.")
-    private Long usuarioId;
-
     @NotBlank(message = "O CEP é obrigatório.")
     @Pattern(regexp = "\\d{5}-\\d{3}", message = "O CEP deve estar no formato 12345-678.")
     private String cep;
@@ -68,14 +65,6 @@ public class AnuncioDTO {
     private List<MultipartFile> imagens;
 
     // Getters e Setters
-    public Long getUsuarioId() {
-        return usuarioId;
-    }
-
-    public void setUsuarioId(Long usuarioId) {
-        this.usuarioId = usuarioId;
-    }
-
     public String getCep() {
         return cep;
     }
