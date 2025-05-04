@@ -19,14 +19,18 @@ public class AnuncioDTO {
     private Double preco;
 
     @NotBlank(message = "A descrição é obrigatória.")
-    @Size(max = 1000, message = "A descrição não pode exceder 1000 caracteres.")
+    @Size(max = 500, message = "A descrição não pode exceder 500 caracteres.")
     private String descricao;
 
     @NotBlank(message = "A quilometragem é obrigatória.")
     @Pattern(regexp = "\\d+", message = "A quilometragem deve ser um número inteiro positivo.")
     private String quilometragem;
 
-    // Atributos do carro
+    @NotBlank(message = "O tipo de veículo é obrigatório.")
+    @Pattern(regexp = "CARRO|MOTO", message = "O tipo de veículo deve ser CARRO ou MOTO.")
+    private String tipoVeiculo;
+
+    // Atributos comuns
     @NotNull(message = "O campo 'marcaId' é obrigatório.")
     private Long marcaId;
 
@@ -46,20 +50,19 @@ public class AnuncioDTO {
     @Max(value = 2026, message = "O ano do modelo não pode ser maior que 2026.")
     private Integer anoModelo;
 
-    @NotBlank(message = "O campo 'câmbio' é obrigatório.")
-    private String cambio;
-
-    @NotBlank(message = "O campo 'combustível' é obrigatório.")
-    private String combustivel;
-
-    @NotBlank(message = "O campo 'carroceria' é obrigatório.")
-    private String carroceria;
-
-    @Size(max = 50, message = "O motor não pode exceder 50 caracteres.")
-    private String motor;
-
     @Size(max = 100, message = "A versão não pode exceder 100 caracteres.")
     private String versao;
+
+    // Atributos de Carro
+    private String cambio;
+    private String combustivel;
+    private String carroceria;
+    private String motor;
+
+    // Atributos de Moto
+    private String freio;
+    private String partida;
+    private String cilindrada;
 
     // Campo para upload de múltiplas imagens
     private List<MultipartFile> imagens;
@@ -105,6 +108,14 @@ public class AnuncioDTO {
         this.quilometragem = quilometragem;
     }
 
+    public String getTipoVeiculo() {
+        return tipoVeiculo;
+    }
+
+    public void setTipoVeiculo(String tipoVeiculo) {
+        this.tipoVeiculo = tipoVeiculo;
+    }
+
     public Long getMarcaId() {
         return marcaId;
     }
@@ -145,6 +156,14 @@ public class AnuncioDTO {
         this.anoModelo = anoModelo;
     }
 
+    public String getVersao() {
+        return versao;
+    }
+
+    public void setVersao(String versao) {
+        this.versao = versao;
+    }
+
     public String getCambio() {
         return cambio;
     }
@@ -177,12 +196,28 @@ public class AnuncioDTO {
         this.motor = motor;
     }
 
-    public String getVersao() {
-        return versao;
+    public String getFreio() {
+        return freio;
     }
 
-    public void setVersao(String versao) {
-        this.versao = versao;
+    public void setFreio(String freio) {
+        this.freio = freio;
+    }
+
+    public String getPartida() {
+        return partida;
+    }
+
+    public void setPartida(String partida) {
+        this.partida = partida;
+    }
+
+    public String getCilindrada() {
+        return cilindrada;
+    }
+
+    public void setCilindrada(String cilindrada) {
+        this.cilindrada = cilindrada;
     }
 
     public List<MultipartFile> getImagens() {

@@ -1,23 +1,30 @@
 package br.com.ConnectMotors.Entidade.Model.Moto;
 
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.*;
 
 public class MotoDTO {
 
-    @NotBlank(message = "O campo 'marca' é obrigatório.")
-    private String marca;
+    @NotNull(message = "O campo 'marcaId' é obrigatório.")
+    private Long marcaId;
 
-    @NotBlank(message = "O campo 'modelo' é obrigatório.")
-    private String modelo;
+    @NotNull(message = "O campo 'modeloId' é obrigatório.")
+    private Long modeloId;
 
-    @NotBlank(message = "O campo 'cor' é obrigatório.")
-    private String cor;
+    @NotNull(message = "O campo 'corId' é obrigatório.")
+    private Long corId;
 
-    @NotNull(message = "O campo 'ano' é obrigatório.")
-    @Min(value = 1, message = "O ano deve ser maior que zero.")
-    private int ano;
+    @NotNull(message = "O campo 'ano de fabricação' é obrigatório.")
+    @Min(value = 1900, message = "O ano de fabricação deve ser maior ou igual a 1900.")
+    @Max(value = 2026, message = "O ano de fabricação não pode ser maior que 2026.")
+    private Integer anoFabricacao;
+
+    @NotNull(message = "O campo 'ano do modelo' é obrigatório.")
+    @Min(value = 1900, message = "O ano do modelo deve ser maior ou igual a 1900.")
+    @Max(value = 2026, message = "O ano do modelo não pode ser maior que 2026.")
+    private Integer anoModelo;
+
+    @Size(max = 100, message = "A versão não pode exceder 100 caracteres.")
+    private String versao;
 
     @NotBlank(message = "O campo 'freio' é obrigatório.")
     private String freio;
@@ -25,44 +32,59 @@ public class MotoDTO {
     @NotBlank(message = "O campo 'partida' é obrigatório.")
     private String partida;
 
-    @NotNull(message = "O campo 'cilindrada' é obrigatório.")
-    @Min(value = 1, message = "A cilindrada deve ser maior que zero.")
-    private int cilindrada;
+    @NotBlank(message = "O campo 'cilindrada' é obrigatório.")
+    private String cilindrada;
 
     @NotBlank(message = "O campo 'combustível' é obrigatório.")
     private String combustivel;
 
     // Getters e Setters
-    public String getMarca() {
-        return marca;
+    public Long getMarcaId() {
+        return marcaId;
     }
 
-    public void setMarca(String marca) {
-        this.marca = marca;
+    public void setMarcaId(Long marcaId) {
+        this.marcaId = marcaId;
     }
 
-    public String getModelo() {
-        return modelo;
+    public Long getModeloId() {
+        return modeloId;
     }
 
-    public void setModelo(String modelo) {
-        this.modelo = modelo;
+    public void setModeloId(Long modeloId) {
+        this.modeloId = modeloId;
     }
 
-    public String getCor() {
-        return cor;
+    public Long getCorId() {
+        return corId;
     }
 
-    public void setCor(String cor) {
-        this.cor = cor;
+    public void setCorId(Long corId) {
+        this.corId = corId;
     }
 
-    public int getAno() {
-        return ano;
+    public Integer getAnoFabricacao() {
+        return anoFabricacao;
     }
 
-    public void setAno(int ano) {
-        this.ano = ano;
+    public void setAnoFabricacao(Integer anoFabricacao) {
+        this.anoFabricacao = anoFabricacao;
+    }
+
+    public Integer getAnoModelo() {
+        return anoModelo;
+    }
+
+    public void setAnoModelo(Integer anoModelo) {
+        this.anoModelo = anoModelo;
+    }
+
+    public String getVersao() {
+        return versao;
+    }
+
+    public void setVersao(String versao) {
+        this.versao = versao;
     }
 
     public String getFreio() {
@@ -81,11 +103,11 @@ public class MotoDTO {
         this.partida = partida;
     }
 
-    public int getCilindrada() {
+    public String getCilindrada() {
         return cilindrada;
     }
 
-    public void setCilindrada(int cilindrada) {
+    public void setCilindrada(String cilindrada) {
         this.cilindrada = cilindrada;
     }
 

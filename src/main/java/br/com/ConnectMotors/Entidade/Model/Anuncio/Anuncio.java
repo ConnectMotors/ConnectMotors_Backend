@@ -30,6 +30,12 @@ public class Anuncio {
     private String cep;
 
     @Column(nullable = false)
+    private String localidade; // Novo campo
+
+    @Column(nullable = false, length = 2)
+    private String uf; // Novo campo
+
+    @Column(nullable = false)
     private double preco;
 
     @Column(nullable = false, length = 500)
@@ -82,6 +88,22 @@ public class Anuncio {
 
     public void setCep(String cep) {
         this.cep = cep;
+    }
+
+    public String getLocalidade() {
+        return localidade;
+    }
+
+    public void setLocalidade(String localidade) {
+        this.localidade = localidade;
+    }
+
+    public String getUf() {
+        return uf;
+    }
+
+    public void setUf(String uf) {
+        this.uf = uf;
     }
 
     public double getPreco() {

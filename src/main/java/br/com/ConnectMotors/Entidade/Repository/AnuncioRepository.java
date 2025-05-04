@@ -29,7 +29,7 @@ public interface AnuncioRepository extends JpaRepository<Anuncio, Long> {
             "AND (:precoMin IS NULL OR a.preco >= :precoMin) " +
             "AND (:precoMax IS NULL OR a.preco <= :precoMax) " +
             "AND (:quilometragemMax IS NULL OR a.quilometragem <= :quilometragemMax)")
-    List<Anuncio> findByFiltros(
+    List<Anuncio> findByFiltrosCarro(
             @Param("marcaId") Long marcaId,
             @Param("modeloId") Long modeloId,
             @Param("corId") Long corId,
@@ -39,6 +39,37 @@ public interface AnuncioRepository extends JpaRepository<Anuncio, Long> {
             @Param("anoFabricacao") Integer anoFabricacao,
             @Param("anoModelo") Integer anoModelo,
             @Param("motor") String motor,
+            @Param("versao") String versao,
+            @Param("precoMin") Double precoMin,
+            @Param("precoMax") Double precoMax,
+            @Param("quilometragemMax") String quilometragemMax
+    );
+
+    @Query("SELECT a FROM Anuncio a " +
+            "JOIN a.moto m " +
+            "WHERE (:marcaId IS NULL OR m.marca.id = :marcaId) " +
+            "AND (:modeloId IS NULL OR m.modelo.id = :modeloId) " +
+            "AND (:corId IS NULL OR m.cor.id = :corId) " +
+            "AND (:freio IS NULL OR m.freio = :freio) " +
+            "AND (:partida IS NULL OR m.partida = :partida) " +
+            "AND (:cilindrada IS NULL OR m.cilindrada = :cilindrada) " +
+            "AND (:combustivel IS NULL OR m.combustivel = :combustivel) " +
+            "AND (:anoFabricacao IS NULL OR m.anoFabricacao = :anoFabricacao) " +
+            "AND (:anoModelo IS NULL OR m.anoModelo = :anoModelo) " +
+            "AND (:versao IS NULL OR m.versao = :versao) " +
+            "AND (:precoMin IS NULL OR a.preco >= :precoMin) " +
+            "AND (:precoMax IS NULL OR a.preco <= :precoMax) " +
+            "AND (:quilometragemMax IS NULL OR a.quilometragem <= :quilometragemMax)")
+    List<Anuncio> findByFiltrosMoto(
+            @Param("marcaId") Long marcaId,
+            @Param("modeloId") Long modeloId,
+            @Param("corId") Long corId,
+            @Param("freio") String freio,
+            @Param("partida") String partida,
+            @Param("cilindrada") String cilindrada,
+            @Param("combustivel") String combustivel,
+            @Param("anoFabricacao") Integer anoFabricacao,
+            @Param("anoModelo") Integer anoModelo,
             @Param("versao") String versao,
             @Param("precoMin") Double precoMin,
             @Param("precoMax") Double precoMax,

@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -24,10 +25,6 @@ public class AnuncioController {
     public AnuncioController(AnuncioService anuncioService) {
         this.anuncioService = anuncioService;
     }
-
-    // ============================
-    // Rotas Públicas
-    // ============================
 
     @GetMapping
     @Operation(
@@ -59,52 +56,56 @@ public class AnuncioController {
             @RequestParam(required = false) String cambio,
             @RequestParam(required = false) String combustivel,
             @RequestParam(required = false) String carroceria,
+            @RequestParam(required = false) String freio,
+            @RequestParam(required = false) String partida,
+            @RequestParam(required = false) String cilindrada,
             @RequestParam(required = false) Integer anoFabricacao,
             @RequestParam(required = false) Integer anoModelo,
             @RequestParam(required = false) String motor,
             @RequestParam(required = false) String versao,
             @RequestParam(required = false) Double precoMin,
             @RequestParam(required = false) Double precoMax,
-            @RequestParam(required = false) String quilometragemMax
+            @RequestParam(required = false) String quilometragemMax,
+            @RequestParam(required = false) String tipoVeiculo
     ) {
         List<Anuncio> anuncios = anuncioService.filtrarAnuncios(
                 marcaId, modeloId, corId, cambio, combustivel, carroceria,
-                anoFabricacao, anoModelo, motor, versao, precoMin, precoMax, quilometragemMax
+                freio, partida, cilindrada, anoFabricacao, anoModelo, motor, versao,
+                precoMin, precoMax, quilometragemMax, tipoVeiculo
         );
         return ResponseEntity.ok(anuncios);
     }
 
-    // ============================
-    // Rotas Administrativas
-    // ============================
-
     @PostMapping(consumes = "multipart/form-data")
     @Operation(
             summary = "Criar um novo anúncio",
-            description = "Cadastra um novo anúncio no sistema, incluindo os dados do carro e múltiplas imagens.",
+            description = "Cadastra um novo anúncio no sistema, incluindo os dados do carro ou moto e múltiplas imagens.",
             responses = {
                     @ApiResponse(responseCode = "200", description = "Anúncio criado com sucesso",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = Anuncio.class))),
                     @ApiResponse(responseCode = "400", description = "Erro na validação dos dados fornecidos")
             }
     )
-    public ResponseEntity<Anuncio> criarAnuncio(
+    public ResponseEntity<?> criarAnuncio(
             @RequestPart("anuncio") @Valid AnuncioDTO anuncioDTO,
             @RequestPart(value = "imagens", required = false) List<MultipartFile> imagens
     ) {
-        // Valida tipo de arquivo das imagens
-        if (imagens != null && !imagens.isEmpty()) {
-            for (MultipartFile imagem : imagens) {
-                String contentType = imagem.getContentType();
-                if (contentType == null || !contentType.startsWith("image/")) {
-                    throw new IllegalArgumentException("Apenas arquivos de imagem são permitidos.");
+        try {
+            if (imagens != null && !imagens.isEmpty()) {
+                for (MultipartFile imagem : imagens) {
+                    String contentType = imagem.getContentType();
+                    if (contentType == null || !contentType.startsWith("image/")) {
+                        return ResponseEntity.badRequest().body("Apenas arquivos de imagem são permitidos.");
+                    }
                 }
+                anuncioDTO.setImagens(imagens);
             }
-            anuncioDTO.setImagens(imagens);
+            Anuncio novoAnuncio = anuncioService.criarAnuncio(anuncioDTO);
+            return ResponseEntity.ok(novoAnuncio);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao criar o anúncio: " + e.getMessage());
         }
-        Anuncio novoAnuncio = anuncioService.criarAnuncio(anuncioDTO);
-        return ResponseEntity.ok(novoAnuncio);
     }
-
-    
 }

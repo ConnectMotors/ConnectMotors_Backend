@@ -1,5 +1,6 @@
 package br.com.ConnectMotors.Entidade.Model.Moto;
 
+import br.com.ConnectMotors.Entidade.Model.Cor.Cor;
 import br.com.ConnectMotors.Entidade.Model.Marca.Marca;
 import br.com.ConnectMotors.Entidade.Model.Modelo.Modelo;
 import jakarta.persistence.*;
@@ -19,12 +20,30 @@ public class Moto {
     @JoinColumn(name = "modelo_id", nullable = false)
     private Modelo modelo;
 
-    private String cor;
-    private int ano;
-    private String freio;        // Ex.: "Disco", "Tambor"
-    private String partida;      // Ex.: "Elétrica", "Pedal"
-    private int cilindrada;      // Ex.: 150, 300 (em cc)
-    private String combustivel;  // Ex.: "Gasolina", "Flex"
+    @ManyToOne
+    @JoinColumn(name = "cor_id", nullable = false)
+    private Cor cor;
+
+    @Column(nullable = false)
+    private Integer anoFabricacao; // Renomeado de 'ano' para consistência com Carro
+
+    @Column(nullable = false)
+    private Integer anoModelo; // Novo campo
+
+    @Column(length = 100)
+    private String versao; // Novo campo
+
+    @Column(nullable = false)
+    private String freio; // Ex.: "Disco", "Tambor"
+
+    @Column(nullable = false)
+    private String partida; // Ex.: "Elétrica", "Pedal"
+
+    @Column(nullable = false)
+    private String cilindrada; // Ex.: "150", "300" (em cc)
+
+    @Column(nullable = false)
+    private String combustivel; // Ex.: "Gasolina", "Flex"
 
     // Getters e Setters
     public Long getId() {
@@ -51,20 +70,36 @@ public class Moto {
         this.modelo = modelo;
     }
 
-    public String getCor() {
+    public Cor getCor() {
         return cor;
     }
 
-    public void setCor(String cor) {
+    public void setCor(Cor cor) {
         this.cor = cor;
     }
 
-    public int getAno() {
-        return ano;
+    public Integer getAnoFabricacao() {
+        return anoFabricacao;
     }
 
-    public void setAno(int ano) {
-        this.ano = ano;
+    public void setAnoFabricacao(Integer anoFabricacao) {
+        this.anoFabricacao = anoFabricacao;
+    }
+
+    public Integer getAnoModelo() {
+        return anoModelo;
+    }
+
+    public void setAnoModelo(Integer anoModelo) {
+        this.anoModelo = anoModelo;
+    }
+
+    public String getVersao() {
+        return versao;
+    }
+
+    public void setVersao(String versao) {
+        this.versao = versao;
     }
 
     public String getFreio() {
@@ -83,11 +118,11 @@ public class Moto {
         this.partida = partida;
     }
 
-    public int getCilindrada() {
+    public String getCilindrada() {
         return cilindrada;
     }
 
-    public void setCilindrada(int cilindrada) {
+    public void setCilindrada(String cilindrada) {
         this.cilindrada = cilindrada;
     }
 
