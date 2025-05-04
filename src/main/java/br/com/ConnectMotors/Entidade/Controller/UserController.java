@@ -9,6 +9,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import br.com.ConnectMotors.Entidade.Model.User.LoginRequestDTO;
 import br.com.ConnectMotors.Entidade.Model.User.UserRequestDTO;
 import br.com.ConnectMotors.Entidade.Model.User.UserResponseDTO;
 import br.com.ConnectMotors.Entidade.Service.UserService;
@@ -31,7 +32,7 @@ public class UserController {
     @PostMapping("/login")
     @Operation(
         summary = "Autenticar usuário",
-        description = "Gera um token JWT para acesso aos endpoints protegidos.",
+        description = "Gera um token JWT para acesso aos endpoints protegidos. O campo 'identifier' pode ser um username ou email.",
         responses = {
             @ApiResponse(responseCode = "200", description = "Login realizado com sucesso", 
                          content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserResponseDTO.class))),
@@ -40,9 +41,9 @@ public class UserController {
         }
     )
     public ResponseEntity<?> createAuthenticationToken(
-        @RequestBody(description = "Dados para autenticação", required = true, 
-                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserRequestDTO.class)))
-        @Validated @org.springframework.web.bind.annotation.RequestBody UserRequestDTO authenticationRequest,
+        @RequestBody(description = "Dados para autenticação (username ou email e senha)", required = true, 
+                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = LoginRequestDTO.class)))
+        @Validated @org.springframework.web.bind.annotation.RequestBody LoginRequestDTO loginRequest,
         BindingResult bindingResult
     ) throws Exception {
         // Verifica se há erros de validação
@@ -53,11 +54,15 @@ public class UserController {
             );
             return ResponseEntity.badRequest().body(errors);
         }
-        
+
+        // Converte LoginRequestDTO para UserRequestDTO para compatibilidade com UserService
+        UserRequestDTO authenticationRequest = new UserRequestDTO();
+        authenticationRequest.setUsername(loginRequest.getIdentifier());
+        authenticationRequest.setPassword(loginRequest.getPassword());
+
         String token = authenticationService.authenticateUser(authenticationRequest);
         return ResponseEntity.ok(new UserResponseDTO(token));
     }
-
 
     @PostMapping("/register")
     @Operation(
