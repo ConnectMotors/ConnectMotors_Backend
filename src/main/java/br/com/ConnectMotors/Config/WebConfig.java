@@ -16,11 +16,8 @@ public class WebConfig implements WebMvcConfigurer {
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
                 .allowedOrigins(
-                        "http://127.0.0.1:5500",
-                        "http://localhost:5173",
-                        "https://seu-dominio-de-producao.com.br",
-                        "http://localhost:8080",
-                        "http://localhost:5500"
+                        "http://127.0.0.1:5500", 
+                        "http://localhost:5173" 
                 )
                 .allowedMethods(
                         "GET",
@@ -34,6 +31,7 @@ public class WebConfig implements WebMvcConfigurer {
                 .allowCredentials(true)
                 .maxAge(3600);
     }
+    
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {

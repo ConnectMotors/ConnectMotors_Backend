@@ -1,5 +1,7 @@
 package br.com.ConnectMotors.Config;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,6 +15,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.Arrays;
 
 @Configuration
 @EnableWebSecurity
@@ -31,6 +38,20 @@ public class WebSecurityConfig {
     }
 
     @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration config = new CorsConfiguration();
+        config.setAllowedOrigins(List.of("http://127.0.0.1:5500", "http://localhost:5173")); // Adicionando mais um host
+        config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
+        config.setAllowedHeaders(List.of("*"));
+        config.setAllowCredentials(true);
+    
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", config);
+        return source;
+    }
+    
+
+    @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
         return authConfig.getAuthenticationManager();
     }
@@ -38,37 +59,25 @@ public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
+                .cors(cors -> cors.configurationSource(corsConfigurationSource())) // <<< ATIVANDO CORS
                 .csrf(csrf -> csrf.disable())
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(jwtAuthenticationEntryPoint))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> 
                     auth
-                        // Authentication endpoints
                         .requestMatchers("/auth/register", "/auth/login").permitAll()
-                        
-                        // Swagger documentation
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
-
-                        // Public endpoints (GET only for anuncios)
                         .requestMatchers("GET", "/anuncios/marcas").permitAll()
                         .requestMatchers("GET", "/uploads/**").permitAll()
                         .requestMatchers("GET", "/anuncios/modelos/{marcaId}").permitAll()
                         .requestMatchers("GET", "/anuncios").permitAll()
                         .requestMatchers("GET", "/admin/carros/**").permitAll()
-
-                        // Admin endpoints (for car, brand, and model management)
                         .requestMatchers("/admin/carros/**").hasRole("ADMIN")
                         .requestMatchers("/admin/marcas/**").hasRole("ADMIN")
                         .requestMatchers("/admin/modelos/**").hasRole("ADMIN")
-
-                        // Authenticated endpoints (POST for anuncios requires login)
                         .requestMatchers("POST", "/anuncios").authenticated()
                         .requestMatchers("/api/private").authenticated()
-
-                        // Admin-only endpoint
                         .requestMatchers("/api/admin").hasRole("ADMIN")
-
-                        // Any other request requires authentication
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
