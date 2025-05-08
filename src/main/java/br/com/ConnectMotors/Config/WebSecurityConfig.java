@@ -71,6 +71,7 @@ public class WebSecurityConfig {
                         .requestMatchers("GET", "/uploads/**").permitAll()
                         .requestMatchers("GET", "/anuncios/modelos/{marcaId}").permitAll()
                         .requestMatchers("GET", "/anuncios").permitAll()
+                        .requestMatchers("GET", "/anuncios/filtros").permitAll()
                         .requestMatchers("GET", "/admin/carros/**").permitAll()
                         .requestMatchers("/admin/carros/**").hasRole("ADMIN")
                         .requestMatchers("/admin/marcas/**").hasRole("ADMIN")
