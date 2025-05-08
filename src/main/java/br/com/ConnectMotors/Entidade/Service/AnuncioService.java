@@ -34,7 +34,6 @@ public class AnuncioService {
     private static final Logger logger = LoggerFactory.getLogger(AnuncioService.class);
 
     private final AnuncioRepository anuncioRepository;
-    private final UserRepository userRepository;
     private final CarroRepository carroRepository;
     private final MotoRepository motoRepository;
     private final MarcaRepository marcaRepository;
@@ -55,7 +54,6 @@ public class AnuncioService {
             @Value("${file.upload-dir}") String uploadDir
     ) {
         this.anuncioRepository = anuncioRepository;
-        this.userRepository = userRepository;
         this.carroRepository = carroRepository;
         this.motoRepository = motoRepository;
         this.marcaRepository = marcaRepository;

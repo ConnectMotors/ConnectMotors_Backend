@@ -2,7 +2,6 @@ package br.com.ConnectMotors;
 
 import br.com.ConnectMotors.Entidade.Model.Marca.Marca;
 import br.com.ConnectMotors.Entidade.Model.Modelo.Modelo;
-import br.com.ConnectMotors.Entidade.Repository.MarcaRepository;
 import br.com.ConnectMotors.Entidade.Repository.ModeloRepository;
 
 import org.junit.jupiter.api.BeforeEach;

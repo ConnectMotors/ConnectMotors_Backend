@@ -20,7 +20,7 @@ public class Mensagem {
     @JoinColumn(name = "destinatario_id", nullable = false)
     private User destinatario;
 
-    @Column(nullable = false, length = 1000)
+    @Column(nullable = false)
     private String conteudo;
 
     @Column(nullable = false)
